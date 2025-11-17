@@ -1,10 +1,16 @@
-import React from "react";
+import React ,{useState} from "react";
 import { Link } from "react-router-dom";
 import { HiOutlineUser ,HiOutlineShoppingBag , } from "react-icons/hi";
 import {HiBars3BottomRight} from "react-icons/hi2";
 import CartDrawer from "../Layout/CartDrawer";
 import SearchBar from "./SearchBar";
 const Navbar = () => {
+
+const [drawerOpen, setDrawerOpen] = useState(false);
+  const toggleCartDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  }
+
   return (
     <>
       <nav className="container mx-auto flex items-center justify-between py-4 px-6">
@@ -32,7 +38,9 @@ const Navbar = () => {
             <HiOutlineUser className="h-6 w-6 text-gray-700" /> 
              </Link>
 
-            <button className="relative hover:text-TrendDrift-red cursor-pointer">
+            <button className="relative hover:text-TrendDrift-red cursor-pointer"
+            onClick={toggleCartDrawer}
+            >
             <HiOutlineShoppingBag className="h-6 w-6 text-gray-700" />
             <span className="absolute -top-1 bg-TrendDrift-red text-white text-xs rounded-full px-2 py-0.5">
                 3
@@ -47,7 +55,7 @@ const Navbar = () => {
             </button>
         </div>
       </nav>
-      <CartDrawer />
+      <CartDrawer  drawerOpen={drawerOpen} toggleCartDrawer={toggleCartDrawer}/>
     </>
   );
 };
