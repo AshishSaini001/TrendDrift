@@ -6,7 +6,7 @@ import { FiPhoneCall } from 'react-icons/fi'
 import { RiTwitterXLine } from 'react-icons/ri'
 const Footer = () => {
   return (
-    <footer className='border-t py-12'>
+    <footer className='border-t py-5'>
         <div className='container mx-auto grid grid-cols-1 px-10 md:grid-cols-4 gap-8  '>
             {/* Newsletter Signup */}
             <div>
