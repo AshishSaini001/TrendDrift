@@ -23,7 +23,8 @@ const toggleNavDrawer=()=>{
       <nav className="container mx-auto flex items-center justify-between py-4 px-6">
         {/* Left - Logo */}
         <div>
-          <Link to="/" className="text-wxl font-medium">
+          <Link to="/" className=" flex text-wxl font-medium">
+            <img src="/trenddrift.svg" alt="logo" className="w-10 h-10 drop-shadow-[0_0_8px_rgba(255,0,0,0.5)]" />
             <h1 className="text-3xl font-bold">
               <span className="text-TrendDrift-red drop-shadow-[0_0_8px_rgba(255,0,0,0.5)]">
                 Trend

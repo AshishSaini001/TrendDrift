@@ -137,11 +137,11 @@ const NewArrivals = () => {
       setCanScrollRight(leftScroll < maxScroll - 1); // Right button disable logic
     }
 
-    console.log({
-      scrollLeft: container.scrollLeft,
-      scrollWidth: container.scrollWidth,
-      clientWidth: container.clientWidth,
-    });
+    // console.log({
+    //   scrollLeft: container.scrollLeft,
+    //   scrollWidth: container.scrollWidth,
+    //   clientWidth: container.clientWidth,
+    // });
   };
 
   useEffect(() => {

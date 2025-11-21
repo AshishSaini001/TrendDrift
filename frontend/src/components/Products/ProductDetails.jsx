@@ -1,6 +1,7 @@
 
 import { useState,useEffect } from 'react'
 import { toast } from 'sonner';
+import ProductGrid from './ProductGrid';
 
 
 
@@ -26,6 +27,54 @@ import { toast } from 'sonner';
             },
         ]
     }
+
+
+const similarProducts = [
+    {
+        _id:1,
+        name: "Casual Blue Jeans",
+        price: 49.99,
+        images:[
+            {
+            url: "https://picsum.photos/500/500/?random=21",
+            altText: "Casual Blue Jeans Image"
+            }
+        ]
+    },
+    {
+        _id:2,
+        name: "Red Hoodie",
+        price: 39.99,
+        images:[
+            {
+            url: "https://picsum.photos/500/500/?random=22",
+            altText: "Red Hoodie Image"
+            }
+        ]
+    },
+    {
+        _id:3,
+        name: "Black Sneakers",
+        price: 59.99,
+        images:[
+            {
+            url: "https://picsum.photos/500/500/?random=23",
+            altText: "Black Sneakers Image" 
+            }
+        ]
+    },
+    {
+        _id:4,
+        name: "Leather Belt",       
+        price: 24.99,
+        images:[
+            {
+            url: "https://picsum.photos/500/500/?random=24",
+            altText: "Leather Belt Image"
+            }
+        ]
+    },
+]
 
 
 
@@ -191,6 +240,17 @@ const handleAddToCart=()=>{
 
 
                 </div>
+            </div>
+            {/* you may also like section */}
+                <div className='mt-20'>
+                    <h2 className='text-2xl text-center font-medium mb-4'>
+                        You may also like
+                    </h2>
+                    <ProductGrid products={similarProducts}/>
+                </div>
+
+            <div>
+
             </div>
 
         </div>
