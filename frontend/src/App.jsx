@@ -5,7 +5,9 @@ import UserLayout from './components/Layout/UserLayout'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
-
+import Profile from './pages/Profile.jsx'
+import CollectionPage from './pages/CollectionPage.jsx'
+import ProductDetails from './components/Products/ProductDetails.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -19,7 +21,9 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="*" element={<h1>404 Not Found</h1>} />
-
+        <Route path="profile" element={<Profile />} />
+        <Route path="collections/:collection" element={<CollectionPage />} />
+        <Route path="product/:id" element={<ProductDetails />} />
       </Route>
      </Routes>
      </BrowserRouter>

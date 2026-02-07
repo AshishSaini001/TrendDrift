@@ -35,7 +35,7 @@ const toggleNavDrawer=()=>{
         </div>
         {/* center - Navigation Links */}
         <div className="hidden md:flex space-x-6">
-            <Link to="/" className="text-gray-700 hover:text-TrendDrift-red text-sm font-medium">MEN</Link>
+            <Link to="/collections/all" className="text-gray-700 hover:text-TrendDrift-red text-sm font-medium">MEN</Link>
             <Link to="/shop" className="text-gray-700  hover:text-TrendDrift-red text-sm font-medium">WOMEN</Link>
             <Link to="/about" className="text-gray-700  hover:text-TrendDrift-red text-sm font-medium">TOP WEAR</Link>
             <Link to="/about" className="text-gray-700  hover:text-TrendDrift-red text-sm font-medium">BOTTOM WEAR</Link>
