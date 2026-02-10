@@ -160,9 +160,9 @@ const Checkout = () => {
       {/* Right Section */}
       <div className='bg-gray-50 p-6 rounded-lg'>
         <h3 className='text-lg mb-4'>Order Summary</h3>
-        <div className='border-t py-4 mb-4'>
+        <div className='border-t border-gray-400 py-4 mb-4'>
             {cart.products.map((product,index)=>(
-                <div key={index} className='flex justify-between items-center mb-2 border-b py-2'>
+                <div key={index} className='flex justify-between items-center mb-2 border-b border-gray-400 py-2'>
                     <div className='flex items-start'>
                         <img src={product.img} alt={product.name} className='w-20 h-24 object-cover mr-4'/>
                     </div>
@@ -186,7 +186,7 @@ const Checkout = () => {
             <p>Shipping</p>
             <p>Free</p>
         </div>
-        <div className='flex justify-between items-center text-lg mt-4 border-t pt-4'>
+        <div className='flex justify-between items-center text-lg mt-4 border-t border-gray-400 pt-4'>
             <p>Total</p>
             <p>${cart.totalPrice?.toLocaleString()}</p>
         </div>
