@@ -1,12 +1,32 @@
-# React + Vite
+# Trendrift - MERN Stack Clothing E-Commerce
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Trendrift is a full-stack clothing e-commerce web application built with the MERN stack. It provides a seamless online shopping experience where users can browse, filter, and purchase apparel across various categories. The platform features a responsive, modern UI with secure payment processing and order tracking.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **User Authentication** – Register, login, and manage your profile
+- **Product Browsing** – Filter by gender, category, and more; sort by price, popularity, etc.
+- **Product Details** – View images, descriptions, pricing, and sizing info
+- **Shopping Cart** – Add/remove items with a slide-out cart drawer
+- **Checkout & Payments** – Secure checkout with PayPal integration
+- **Order Management** – View order history and detailed order status
+- **Responsive Design** – Fully mobile-friendly UI built with Tailwind CSS
+- **Admin Dashboard** – Manage products, orders, and users (admin panel)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Tech Stack
+
+| Layer      | Technology                          |
+|------------|-------------------------------------|
+| Frontend   | React 19, Vite, Tailwind CSS 4     |
+| Backend    | Node.js, Express.js                |
+| Database   | MongoDB, Mongoose                  |
+| Payments   | PayPal REST API                    |
+| Routing    | React Router v7                    |
+| Icons      | React Icons                        |
+| Toasts     | Sonner                             |
+
+
