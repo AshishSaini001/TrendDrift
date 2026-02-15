@@ -12,6 +12,8 @@ import Checkout from "./components/Cart/Checkout.jsx";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
 import MyOrdersPage from "./pages/MyOrdersPage.jsx";
+import AdminLayout from "./components/Admin/AdminLayout.jsx";
+import AdminHomePage from "./pages/AdminHomePage.jsx";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -34,6 +36,10 @@ function App() {
           />
           <Route path="order/:id" element={<OrderDetails />} />
           <Route path="my-orders" element={<MyOrdersPage />} />
+        </Route>
+        {/* Admin routes will go here */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminHomePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
