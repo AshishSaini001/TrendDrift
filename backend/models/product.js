@@ -51,7 +51,7 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     material: {
-      type: String,
+      type: [String],
     },
     gender: {
       type: String,
