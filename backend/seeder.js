@@ -5,6 +5,7 @@ dotenv.config();
 const Product = require("./models/product");
 const User = require("./models/User");
 const products = require("./data/product");
+const Cart = require("./models/cart");
 
 // connect to MongoDB
 
@@ -17,7 +18,7 @@ const seedData = async () => {
     // Clear existing data
     await Product.deleteMany();
     await User.deleteMany();
-
+    await Cart.deleteMany();
     //default admin user
     const adminUser = await User.create({
       name: "Admin User",
