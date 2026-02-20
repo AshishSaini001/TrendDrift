@@ -4,7 +4,7 @@ import {IoLogoInstagram} from 'react-icons/io5'
 import {RiTwitterXLine} from 'react-icons/ri'
 const Topbar = () => {
   return (
-    <div className='bg-TrendDrift-red text-white'>
+    <div className='bg-TrendDrift-red text-white fixed top-0 left-0 w-full z-50'>
         <div className='container mx-auto flex justify-between items-center py-3 px-4'>
             <div className='hidden md:flex items-center space-x-4'>
                 <a href="#" className='hover:text-gray-300'>

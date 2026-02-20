@@ -20,7 +20,7 @@ const toggleNavDrawer=()=>{
 
   return (
     <>
-      <nav className="container mx-auto flex items-center justify-between py-4 px-6">
+      <nav className="container mx-auto flex items-center justify-between py-1 px-6 w-full fixed top-0 left-0 bg-white z-50 mt-10 shadow-md">
         {/* Left - Logo */}
         <div>
           <Link to="/" className=" flex text-wxl font-medium">

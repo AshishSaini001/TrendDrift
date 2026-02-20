@@ -6,7 +6,7 @@ const connectDB = async () => {
     console.log("MongoDB connected successfully");
   } catch (err) {
     console.error("MongoDB connection failed:", err.message);
-    res.status(500).json({ message: "Internal Server Error" });
+    process.exit(1);
   }
 };
 
