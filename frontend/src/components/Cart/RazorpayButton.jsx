@@ -24,7 +24,7 @@ const RazorpayButton = ({ amount, onSuccess, onError }) => {
 
     const razorpay = new window.Razorpay(options);
 
-    razorpay.on("payment.failed", function (response) {
+    razorpay.on("payment failed", function (response) {
       if (onError) {
         onError(response.error);
       }
@@ -35,9 +35,9 @@ const RazorpayButton = ({ amount, onSuccess, onError }) => {
 
   return (
     <div>
-   <button
-  onClick={handlePayment}
-  className="
+      <button
+        onClick={handlePayment}
+        className="
     relative w-full
     bg-gradient-to-r from-orange-500 via-red-500 to-orange-600
     hover:from-orange-600 hover:via-red-600 hover:to-orange-700
@@ -50,19 +50,19 @@ const RazorpayButton = ({ amount, onSuccess, onError }) => {
     flex items-center justify-center 
     cursor-pointer
   "
->
-  <img
-    src="https://razorpay.com/assets/razorpay-glyph.svg"
-    alt="Razorpay"
-    className="w-14 h-14 object-contain"
-  />
+      >
+        <img
+          src="https://razorpay.com/assets/razorpay-glyph.svg"
+          alt="Razorpay"
+          className="w-14 h-14 object-contain"
+        />
 
-  <span>Pay Securely with Razorpay</span>
-</button>
-<p className="text-xs text-gray-500 text-center mt-2">
-  🔒 100% Secure Payment • UPI • Cards • Net Banking
-</p>
-</div>
+        <span>Pay Securely with Razorpay</span>
+      </button>
+      <p className="text-xs text-gray-500 text-center mt-2">
+        🔒 100% Secure Payment • UPI • Cards • Net Banking
+      </p>
+    </div>
   );
 };
 
