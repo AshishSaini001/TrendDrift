@@ -9,6 +9,7 @@ app.use(express.json());
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 const checkoutRoutes = require("./routes/checkoutROutes");
 
 app.use(cors());
@@ -31,6 +32,9 @@ app.use("/api/cart", cartRoutes);
 
 // Checkout routes
 app.use("/api/checkout", checkoutRoutes);
+
+// Order routes
+app.use("/api/orders", orderRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
