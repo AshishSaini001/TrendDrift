@@ -24,9 +24,9 @@ const toggleNavDrawer=()=>{
         {/* Left - Logo */}
         <div>
           <Link to="/" className=" flex text-wxl font-medium">
-            <img src="/trenddrift.svg" alt="logo" className="w-10 h-10 drop-shadow-[0_0_8px_rgba(255,0,0,0.5)]" />
+            <img src="/trenddrift.svg" alt="logo" className="w-10 h-10 drop-shadow-[0_0_8px_rgba(1,157,192,0.6)]" />
             <h1 className="text-3xl font-bold">
-              <span className="text-TrendDrift-red drop-shadow-[0_0_8px_rgba(255,0,0,0.5)]">
+              <span className="text-TrendDrift-red drop-shadow-[0_0_8px_rgba(1,157,192,0.6)]">
                 Trend
               </span>
               <span className="text-neutral-900">Drift</span>

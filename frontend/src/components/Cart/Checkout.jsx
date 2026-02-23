@@ -177,7 +177,7 @@ const Checkout = () => {
             {!CheckoutId ? (
               <button
                 type="submit"
-                className=" w-full bg-black text-white px-4 py-3 rounded cursor-pointer hover:bg-gray-800 transition"
+                className=" w-full bg-TrendDrift-red text-white px-4 py-3 rounded cursor-pointer hover:bg-[#017a96] transition"
               >
                 Continue to Payment
               </button>

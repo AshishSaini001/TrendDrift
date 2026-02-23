@@ -191,7 +191,7 @@ const handleAddToCart=()=>{
                         {product.sizes.map((size)=>(
                             <button
                             onClick={()=>setSelectedSize(size)}
-                            key={size} className={`px-4 py-2 rounded border cursor-pointer ${selectedSize===size ? 'bg-black text-white':''}`}>
+                            key={size} className={`px-4 py-2 rounded border cursor-pointer ${selectedSize===size ? 'bg-TrendDrift-red text-white':''}`}>
                                 {size}
                             </button>
                         ))}
@@ -212,8 +212,8 @@ const handleAddToCart=()=>{
                 <button
                 disabled={isButtonDisabled}
                 onClick={handleAddToCart}
-                className={`bg-black cursor-pointer text-white py-2 px-6 rounded w-full mb-4
-                ${isButtonDisabled ? 'opacity-50 cursor-not-allowed':'hover:bg-gray-900'}
+                className={`bg-TrendDrift-red cursor-pointer text-white py-2 px-6 rounded w-full mb-4
+                ${isButtonDisabled ? 'opacity-50 cursor-not-allowed':'hover:bg-[#017a96]'}
                 `}
                 
                 >
@@ -242,7 +242,7 @@ const handleAddToCart=()=>{
                 </div>
             </div>
             {/* you may also like section */}
-                <div className='mt-20'>
+                <div className='mt-16'>
                     <h2 className='text-2xl text-center font-medium mb-4'>
                         You may also like
                     </h2>

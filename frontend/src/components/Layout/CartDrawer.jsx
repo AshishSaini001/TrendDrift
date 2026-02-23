@@ -31,7 +31,7 @@ const CartDrawer = ({drawerOpen,toggleCartDrawer}) => {
       </div>
       {/* Checkout Button */}
       <div className='p-4 bg-white sticky bottom-0 '>
-        <button className='w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition cursor-pointer '
+        <button className='w-full bg-TrendDrift-red text-white py-3 rounded-lg font-semibold hover:bg-[#017a96] transition cursor-pointer '
         onClick={handleCheckout}
         >Checkout</button>
         <p className='text-sm tracking-tighter text-gray-500 mt-2 text-center'>

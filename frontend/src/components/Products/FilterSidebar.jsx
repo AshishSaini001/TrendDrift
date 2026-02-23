@@ -85,7 +85,7 @@ const FilterSidebar = () => {
     }
 
   return (
-    <div className='p-4'>
+    <div className='p-8'>
       <h3 className="text-xl font-medium text-gray-800 mb-4">
         Filter
       </h3>
@@ -186,9 +186,9 @@ const FilterSidebar = () => {
                         value={brand}
                 onChange={handleFilterChange}
                 checked={filter.brand.includes(brand)}
-                        className='mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300 cursor-pointer'
+                        className='mr-2 h-4 w-4 flex-shrink-0 text-blue-500 focus:ring-blue-400 border-gray-300 cursor-pointer'
                     />
-                    <span className='text-gray-700'>{brand}</span>
+                    <span className='text-gray-700 whitespace-nowrap'>{brand}</span>
                 </div>
                 ))}
         </div>

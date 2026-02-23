@@ -18,7 +18,7 @@ const RazorpayButton = ({ amount, onSuccess, onError }) => {
         contact: "",
       },
       theme: {
-        color: "#000000",
+        color: "#019dc0",
       },
     };
 
@@ -39,12 +39,12 @@ const RazorpayButton = ({ amount, onSuccess, onError }) => {
         onClick={handlePayment}
         className="
     relative w-full
-    bg-gradient-to-r from-orange-500 via-red-500 to-orange-600
-    hover:from-orange-600 hover:via-red-600 hover:to-orange-700
+    bg-gradient-to-r from-[#017a96] via-[#019dc0] to-[#01b4db]
+    hover:from-[#016a82] hover:via-[#018aaa] hover:to-[#019dc0]
     text-white font-semibold tracking-wide
     py-2 rounded-xl
-    shadow-lg shadow-orange-500/40
-    hover:shadow-orange-500/60
+    shadow-lg shadow-[#019dc0]/40
+    hover:shadow-[#019dc0]/60
     transform hover:scale-[1.02]
     transition-all duration-300
     flex items-center justify-center 

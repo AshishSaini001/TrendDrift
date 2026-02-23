@@ -137,13 +137,13 @@ const CollectionPage = () => {
             {/* Filter Sidebar */}
             <div 
             ref={sidebarRef} 
-            className={`${isSidebarOpen ?"translate-x-0":"-translate-x-full"} fixed inset-y-0 z-50 left-0 w-64 bg-white overflow-y-auto transition-transform duration-300 lg:static lg:translate-x-0`}
+            className={`${isSidebarOpen ?"translate-x-0":"-translate-x-full"} fixed inset-y-0 z-50 left-0 w-58 bg-white overflow-y-auto transition-transform duration-300 lg:sticky lg:top-[100px] lg:h-[calc(100vh-100px)] lg:z-0 lg:translate-x-0`}
             
             >
                 <FilterSidebar />
             </div>
-            <div className="flex-grow p-4">
-                <h2 className='text-2xl uppercase mb-4'>All Collection</h2>
+            <div className="flex-1 p-4">
+                <h2 className='text-2xl uppercase mt-8 ml-10 '><strong>All Collection</strong></h2>
 
                 {/* Sort options */}
                 <SortOptions />

@@ -17,7 +17,7 @@ const Footer = () => {
                 <form className='flex'>
                     <input type="email" placeholder='Enter your email' className='p-3 w-full text-sm border-t border-l border-b border-gray-300 rounded-l-md focus:outline-none 
                     focus:ring-2 focus:ring-gray-500 transition-all' required/>
-                    <button type="submit" className='bg-black text-white px-6 py-3 text-sm rounded-r-md hover:bg-gray-800 transiton-all cursor-pointer'>Subscribe</button>
+                    <button type="submit" className='bg-TrendDrift-red text-white px-6 py-3 text-sm rounded-r-md hover:bg-[#017a96] transiton-all cursor-pointer'>Subscribe</button>
                 </form>
             </div>
 

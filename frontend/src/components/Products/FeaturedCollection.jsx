@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import featured from '../../assets/featured.webp'
 const FeaturedCollection = () => {
   return (
-    <section className='py-16 px-10 '>
-      <div className='container mx-auto flex flex-col-reverse lg:flex-row items-center bg-green-50 rounded-3xl'>
+    <section className='pt-16 pb-4 px-10 '>
+      <div className='container mx-auto flex flex-col-reverse lg:flex-row items-center bg-cyan-50 rounded-3xl'>
       {/* Left Content */}
       <div className='lg:w-1/2 p-8 text-center lg:text-left'>
         <h2 className='text-lg font-semibold text-gray-700 mb-2'>
@@ -16,7 +16,7 @@ const FeaturedCollection = () => {
         <p className='text-lg text-gray-600 mb-6'>
           Discover high-quality, comfortable apparel designed to fit your lifestyle. Our collection offers a perfect blend of style and functionality, ensuring you look and feel great every day.
         </p>
-        <Link to="/collections/all" className='bg-black text-white px-6 py-3 rounded-lg text-lg hover:bg-gray-800'>Shop Now</Link>
+        <Link to="/collections/all" className='bg-TrendDrift-red text-white px-6 py-3 rounded-lg text-lg hover:bg-[#017a96]'>Shop Now</Link>
       </div>
       {/* Right Image */}
       <div className='lg:w-1/2'>

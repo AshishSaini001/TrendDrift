@@ -1,18 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import heroImg from '../../assets/rabbit-hero.webp'
+import heroImg from '../../assets/rabbit-hero.jpg'
 const Hero = () => {
   return (
-    <section className='relative'>
-        <img src={heroImg} alt="TrendDrift" className='w-full h-[400px] md:h-[600px] object-cover'/>
-        <div className='absolute inset-0  bg-opacity-5 flex items-center justify-center'>
-            <div className='text-center text-white p-6'>
-                <h1 className='text-4xl md:text-9xl font-bold tracking-tighter uppercase mb-4'>Vacation <br /> Ready
+    <section className='relative mt-[-11px]' style={{ backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: 'top' }}>
+        <div className='min-h-[400px] md:min-h-[600px] flex items-center ml-20'>
+            <div className='text-white p-8 md:pl-20 pt-[120px] md:pt-0 max-w-xl'>
+                <h1 className='text-4xl md:text-8xl font-bold tracking-tighter uppercase mb-4'>Vacation <br /> Ready
                 </h1>
-                <p className='text-sm tracking-tightier md:text-lg mb-6'>
+                <p className='text-sm md:text-lg mb-6'>
                     Explore Our Vacation-ready outfits with fast worldwide shipping.
                 </p>
-                <Link to="#" className="bg-white text-gray-950 px-6 py-2 rounded-sm text-lg">Shop Now</Link>
+                <Link to="#" className="bg-white text-gray-950 px-6 py-2 rounded-sm text-lg hover:bg-gray-100 transition">Shop Now</Link>
             </div>
         </div>
     </section>

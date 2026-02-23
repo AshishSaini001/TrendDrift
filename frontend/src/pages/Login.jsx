@@ -23,9 +23,9 @@ const Login = () => {
       <div className='w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12'>
     <form onSubmit={handleSubmit} className='w-full max-w-md bg-white p-8 rounded-lg border shadow-sm'>
       <div className='flex justify-center mb-6 mr-10'>
-          <img src="/trenddrift.svg" alt="logo" className="w-7 h-7 drop-shadow-[0_0_8px_rgba(255,0,0,0.5)]" />
+          <img src="/trenddrift.svg" alt="logo" className="w-7 h-7 drop-shadow-[0_0_8px_rgba(1,157,192,0.6)]" />
             <h2 className="text-2xl font-bold">
-              <span className="text-TrendDrift-red drop-shadow-[0_0_8px_rgba(255,0,0,0.5)]">
+              <span className="text-TrendDrift-red drop-shadow-[0_0_8px_rgba(1,157,192,0.6)]">
                 Trend
               </span>
               <span className="text-neutral-900">Drift</span>
@@ -60,7 +60,7 @@ const Login = () => {
           {isVisible ?(<AiFillEyeInvisible />) : (<AiFillEye />)}
         </span>
       </div>
-      <button type='submit' className='w-full bg-black text-white p-2 rounded-lg font-semibold hover:bg-gray-800 transition cursor-pointer'>Sign In</button>
+      <button type='submit' className='w-full bg-TrendDrift-red text-white p-2 rounded-lg font-semibold hover:bg-[#017a96] transition cursor-pointer'>Sign In</button>
       <p className='mt-6 text-center text-sm'>
         Don't have an account?{" "}
         <Link to="/register" className='text-blue-500 hover:underline ml-1'>Register</Link>
