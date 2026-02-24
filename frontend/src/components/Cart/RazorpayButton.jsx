@@ -45,7 +45,7 @@ const RazorpayButton = ({ amount, onSuccess, onError }) => {
     py-2 rounded-xl
     shadow-lg shadow-[#019dc0]/40
     hover:shadow-[#019dc0]/60
-    transform hover:scale-[1.02]
+    transform 
     transition-all duration-300
     flex items-center justify-center 
     cursor-pointer

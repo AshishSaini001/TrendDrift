@@ -110,8 +110,8 @@ const Home = () => {
         Best Seller
       </h2>
       <ProductDetails />
-      <div className='container mx-auto px-10 '>
-          <h2 className='text-3xl text-center font-bold mb-4'>
+      <div className='container mx-auto px-4 py-16 '>
+          <h2 className='text-3xl text-center font-bold mb-13 '>
             Top Wears for Women
           </h2>
           <ProductGrid products={placeholderProducts} />
