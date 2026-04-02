@@ -10,7 +10,11 @@ const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
-const checkoutRoutes = require("./routes/checkoutROutes");
+const checkoutRoutes = require("./routes/checkoutRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
+const subscribeRoute=require("./routes/subscribeRoute");
+const adminRoutes=require("./routes/adminRoutes");
+const productAdminRoutes = require("./routes/productAdminRoutes");
 
 app.use(cors());
 
@@ -35,6 +39,16 @@ app.use("/api/checkout", checkoutRoutes);
 
 // Order routes
 app.use("/api/orders", orderRoutes);
+
+// Upload routes
+app.use("/api/upload", uploadRoutes);
+
+//Subscribe to newsletter route
+app.use("/api/subscribe", subscribeRoute);
+
+//Admin routes
+app.use('/api/admin/users', adminRoutes);
+app.use('/api/admin/products', productAdminRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);

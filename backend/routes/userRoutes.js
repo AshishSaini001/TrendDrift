@@ -141,46 +141,7 @@ router.put("/change-password", auth ,async(req,res)=>{
     }
 });
 
-// change role /api/users/change-role => Protected route, requires authentication and admin role
-router.put("/change-role", auth ,async(req,res)=>{
-    const { userId, newRole } = req.body;
-    try{
-        if(req.user.role !== "admin"){
-            return res.status(403).json({message:"Access denied, admin only"});
-        }
-        const user = await User.findById(userId);
-        if(!user){
-            return res.status(404).json({message:"User not found"});
-        }
-        user.role = newRole;
-        await user.save();
-        res.status(200).json({message:"User role updated successfully"});
-    }
-    catch(err){
-        console.error("Changing user role failed:", err.message);
-        res.status(500).json({message:"Internal Server Error"});
-    }
-});
 
-// Delete user /api/users/delete => Protected route, requires authentication and admin role
-router.delete("/delete", auth ,async(req,res)=>{
-    const { userId } = req.body;
-    try{
-        if(req.user.role !== "admin"){
-            return res.status(403).json({message:"Access denied, admin only"});
-        }
-        const user = await User.findById(userId);
-        if(!user){
-            return res.status(404).json({message:"User not found"});
-        }
-        await user.remove();
-        res.status(200).json({message:"User deleted successfully"});
-    }
-    catch(err){
-        console.error("Deleting user failed:", err.message);
-        res.status(500).json({message:"Internal Server Error"});
-    }
-});
 
 
 module.exports = router;

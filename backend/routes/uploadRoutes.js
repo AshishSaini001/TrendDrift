@@ -39,14 +39,14 @@ router.post("/", upload.single("image"), async (req, res) => {
 
         streamifier.createReadStream(fileBuffer).pipe(stream);
       });
-
     };
     //call the streamUpload function with the file buffer
     const result = await streamUpload(req.file.buffer);
     res.json({ imageUrl: result.secure_url });
-
   } catch (error) {
     console.error("Error uploading image:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
+module.exports = router;

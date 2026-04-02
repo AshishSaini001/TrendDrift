@@ -1,11 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import mens1 from "../../assets/Mens-collection-1.jpg";
-import mens2 from "../../assets/Mens-collection-2.jpg";
-import mens3 from "../../assets/Mens-collection-3.jpg";
 import women1 from "../../assets/Women-collection-1.jpg";
-import women2 from "../../assets/Women-collection-2.jpg";
-import women3 from "../../assets/Women-collection-3.jpg";
 const GenderCollectionSection = () => {
   return (
     <section className="py-16 px-4 ">
@@ -17,7 +12,7 @@ const GenderCollectionSection = () => {
           <div className="grid grid-cols-2">
             <div className="relative overflow-hidden">
               <img
-                src={women3}
+                src="https://res.cloudinary.com/dth9yyf7t/image/upload/v1771913343/cpb5cwrvqnhq929ymexm.jpg"
                 alt=""
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
@@ -25,7 +20,7 @@ const GenderCollectionSection = () => {
 
             <div className="relative overflow-hidden">
               <img
-                src={women2}
+                src="https://res.cloudinary.com/dth9yyf7t/image/upload/v1771913138/asjpi5ok1jgho3c9dgsk.jpg"
                 alt=""
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
@@ -64,7 +59,7 @@ const GenderCollectionSection = () => {
           <div className="grid grid-cols-2">
             <div className="relative overflow-hidden">
               <img
-                src={mens2}
+                src="https://res.cloudinary.com/dth9yyf7t/image/upload/v1771913506/khrakenc0us1nm4lxh8r.jpg"
                 alt=""
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
@@ -72,7 +67,7 @@ const GenderCollectionSection = () => {
 
             <div className="relative overflow-hidden">
               <img
-                src={mens3}
+                src="https://res.cloudinary.com/dth9yyf7t/image/upload/v1771913556/li6ytjoodpdialozp3fx.jpg"
                 alt=""
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
@@ -81,7 +76,7 @@ const GenderCollectionSection = () => {
           {/* bottom Landscape */}
           <div className="relative overflow-hidden">
             <img
-              src={mens1}
+              src="https://res.cloudinary.com/dth9yyf7t/image/upload/v1771913449/cwqubdme1crpv0rll12o.jpg"
               alt="Men's Collection"
               className="w-full  object-cover transition-transform duration-700 group-hover:scale-105"
             />
