@@ -18,10 +18,15 @@ import UserManagementPage from "./components/Admin/UserManagement.jsx";
 import ProductManagement from "./components/Admin/ProductManagement.jsx";
 import EditProductPage from "./components/Admin/EditProductPage.jsx";
 import OrderManagement from "./components/Admin/OrderManagement.jsx";
+
+import {Provider} from "react-redux";
+import store from "./redux/store.js";
+
 function App() {
   const [count, setCount] = useState(0);
 
   return (
+    <Provider store={store}>
     <BrowserRouter>
       <Toaster position="top-right" />
       <Routes>
@@ -53,6 +58,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </Provider>
   );
 }
 

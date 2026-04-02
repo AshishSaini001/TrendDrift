@@ -4,12 +4,15 @@ import { Link } from 'react-router-dom';
 import register from '../assets/register.webp'
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
+import { useDispatch } from 'react-redux';
+import { registerUser } from '../redux/slices/authSlice';
 
 const Register = () => {
     const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+    const dispatch = useDispatch();
 
     const toggleVisible=()=>{
     setIsVisible(!isVisible);
@@ -17,6 +20,7 @@ const Register = () => {
 
     const handleSubmit =(e)=>{
         e.preventDefault();
+        dispatch(registerUser({name, email, password}));
     }
 
   return (

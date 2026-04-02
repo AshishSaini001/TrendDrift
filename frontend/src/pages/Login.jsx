@@ -4,18 +4,21 @@ import { Link } from 'react-router-dom';
 import login from '../assets/login.webp'
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
+import { loginUser } from '../redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
-
+  const dispatch = useDispatch();
 
   const toggleVisible=()=>{
     setIsVisible(!isVisible);
   }
   const handleSubmit =(e)=>{
         e.preventDefault();
+        dispatch(loginUser({email, password}));
     }
 
   return (
