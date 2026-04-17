@@ -72,7 +72,7 @@ export const deleteUser = createAsyncThunk(
   "admin/deleteUser",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(
+      await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${id}`,
         {
           headers: {
@@ -80,7 +80,7 @@ export const deleteUser = createAsyncThunk(
           },
         },
       );
-      return response.data;
+      return id;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -106,7 +106,7 @@ const adminSlice = createSlice({
     });
     builder.addCase(fetchUsers.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload.message;
+      state.error = action.payload?.message || "Failed to fetch users";
     });
 
     //Add user cases
@@ -116,11 +116,14 @@ const adminSlice = createSlice({
     });
     builder.addCase(addUSer.fulfilled, (state, action) => {
       state.loading = false;
-      state.users.push(action.payload.user);
+      const createdUser = action.payload?.user || action.payload;
+      if (createdUser?._id) {
+        state.users.push(createdUser);
+      }
     });
     builder.addCase(addUSer.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload.message;
+      state.error = action.payload?.message || "Failed to create user";
     });
 
     //Update user cases
@@ -139,7 +142,7 @@ const adminSlice = createSlice({
     });
     builder.addCase(updateUser.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload.message;
+      state.error = action.payload?.message || "Failed to update user";
     });
     //Delete user cases
     builder.addCase(deleteUser.pending, (state) => {
@@ -148,13 +151,11 @@ const adminSlice = createSlice({
     });
     builder.addCase(deleteUser.fulfilled, (state, action) => {
       state.loading = false;
-      state.users = state.users.filter(
-        (user) => user._id !== action.payload._id,
-      );
+      state.users = state.users.filter((user) => user._id !== action.payload);
     });
     builder.addCase(deleteUser.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload.message;
+      state.error = action.payload?.message || "Failed to delete user";
     });
   },
 });

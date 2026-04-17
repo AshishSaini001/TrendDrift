@@ -18,11 +18,11 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=39",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/Y23616s_tttlvl.jpg",
         altText: "Classic Oxford Button-Down Shirt Front View",
       },
       {
-        url: "https://picsum.photos/500/500?random=40",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776255603/RCP402-BLUE-2-s_pzz8ap.jpg",
         altText: "Classic Oxford Button-Down Shirt Back View",
       },
     ],
@@ -46,11 +46,11 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=41",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776256565/0190324-K10K110856BEH-MO-TP-F1_dkognu.jpg",
         altText: "Slim-Fit Stretch Shirt Front View",
       },
       {
-        url: "https://picsum.photos/500/500?random=42",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776256033/photo-1771092358876-ce2368d7fb09_bjldcj.jpg",
         altText: "Slim-Fit Stretch Shirt Back View",
       },
     ],
@@ -74,13 +74,18 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=43",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776256431/51qB0Rua3HL._AC_UY1000__xss7iz.jpg",
         altText: "Casual Denim Shirt Front View",
       },
       {
-        url: "https://picsum.photos/500/500?random=44",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776256431/61lp1ASo7SL._AC_SL1000__bcawfi.jpg",
         altText: "Casual Denim Shirt Back View",
       },
+      ,
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776256431/button-down-denim-sartoriale-6_oxeful.jpg",
+        altText: "Casual Denim Shirt Back View",
+      }
     ],
     rating: 4.6,
     numReviews: 8,
@@ -102,11 +107,11 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=45",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257350/photo-1776007087050-dbc004f5d17c_zjgtvk.jpg",
         altText: "Printed Resort Shirt Front View",
       },
       {
-        url: "https://picsum.photos/500/500?random=1",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257384/photo-1776007087028-77668b485e2b_dymnxr.jpg",
         altText: "Printed Resort Shirt Back View",
       },
     ],
@@ -130,12 +135,12 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=47",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776256565/s7-1492983_alternate10_dlhtwn.jpg",
         altText: "Slim-Fit Easy-Iron Shirt Front View",
       },
       {
-        url: "https://picsum.photos/500/500?random=2",
-        altText: "Slim-Fit Easy-Iron Shirt Front View",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776256566/610NaWLzXvL._AC_UY1000__sxc56e.jpg",
+        altText: "Slim-Fit Easy-Iron Shirt Back View",
       },
     ],
     rating: 5,
@@ -158,11 +163,11 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=3",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257491/U-S-Polo-Assn-Men-s-Slim-Fit-Pique-Polo-Shirt_8b353571-a958-463c-bac6-7d74eca365c2.5affdd199016e78ce5b8c7f89f8491d5_ep70x8.jpg",
         altText: "Polo T-Shirt Front View",
       },
       {
-        url: "https://picsum.photos/500/500?random=4",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257492/f336aa30-7c53-40ae-a37f-bee74858be0e.88feb1126ee05e4da3beb6abde2a3a14_o6prhm.jpg",
         altText: "Polo T-Shirt Back View",
       },
     ],
@@ -186,9 +191,13 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=5",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257610/71fbAybx0_L._AC_UY1000__swzqkj.jpg",
         altText: "Oversized Graphic T-Shirt Front View",
       },
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257611/71PUCPPm1bL._AC_UY1000__qcok9j.jpg",
+        altText: "Oversized Graphic T-Shirt Back View",
+      }
     ],
     rating: 4.6,
     numReviews: 30,
@@ -210,9 +219,13 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=6",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257699/61hGt7vLtlL._AC_UY1000__ibpn6d.jpg",
         altText: "Regular-Fit Henley Shirt Front View",
       },
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257700/61LsIml_qHL._AC_UY350__hrzl3n.jpg",
+        altText: "Regular-Fit Henley Shirt Back View",
+      }
     ],
     rating: 4.5,
     numReviews: 25,
@@ -234,9 +247,17 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=7",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257798/OMF_d0syaw.jpg",
         altText: "Long-Sleeve Thermal Tee Front View",
       },
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257799/OMB_zoyitp.jpg",
+        altText: "Long-Sleeve Thermal Tee Back View",
+      },
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257800/DT02_z2felr.jpg",
+        altText: "Long-Sleeve Thermal Tee Back View",
+      }
     ],
     rating: 4.4,
     numReviews: 18,
@@ -258,8 +279,12 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=8",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257962/RFRWH1x1Closeup_omqskn.png",
         altText: "V-Neck Classic T-Shirt Front View",
+      },
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776257963/BEST-WOMENS-WHITE-T-SHIRTS-SUB-2048px-5826-1_a0itl2.jpg",
+        altText: "V-Neck Classic T-Shirt Back View",
       },
     ],
     rating: 4.7,
@@ -282,7 +307,15 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=9",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776259334/7653c6033dd24f2ab61e6c8ed3f7516a_tplv-fhlh96nyum-crop-webp_1350_1800_zvntog.webp",
+        altText: "Slim Fit Joggers Front View",
+      },
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776259333/a73e25fbecb9470189d509def8e28f6b_tplv-fhlh96nyum-crop-webp_1350_1800_palqgi.webp",
+        altText: "Slim Fit Joggers Front View",
+      },
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776259332/f88093794f0547f39ceca74579ef57c3_tplv-fhlh96nyum-crop-webp_1350_1800_aor28m.webp",
         altText: "Slim Fit Joggers Front View",
       },
     ],
@@ -306,8 +339,12 @@ const products = [
     gender: "Men",
     images: [
       {
-        url: "https://picsum.photos/500/500?random=10",
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776259648/71UNR4XKWUL._AC_UY1000__fzbcyr.jpg",
         altText: "Cargo Joggers Front View",
+      },
+      {
+        url: "https://res.cloudinary.com/dth9yyf7t/image/upload/v1776259649/s-l400_cepgk0.jpg",
+        altText: "Cargo Joggers Back View",
       },
     ],
     rating: 4.7,

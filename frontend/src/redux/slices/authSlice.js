@@ -25,7 +25,7 @@ export const loginUser = createAsyncThunk(
             localStorage.setItem('userToken', response.data.token);
             return response.data.user; //Return user data to be stored in the state
         } catch (error) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(error.response?.data || { message: 'Login failed' });
         }
     }
 );
@@ -39,7 +39,7 @@ export const registerUser = createAsyncThunk(
             localStorage.setItem('userToken', response.data.token);
             return response.data.user; //Return user data to be stored in the state
         } catch (error) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(error.response?.data || { message: 'Registration failed' });
         }
     }
 );
@@ -73,7 +73,7 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message;
+                state.error = action.payload?.message || action.error.message || 'Login failed';
             })
             .addCase(registerUser.pending, (state) => {
                 state.loading = true;
@@ -85,7 +85,7 @@ const authSlice = createSlice({
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message;
+                state.error = action.payload?.message || action.error.message || 'Registration failed';
             });
     },
 });

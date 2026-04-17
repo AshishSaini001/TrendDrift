@@ -1,99 +1,90 @@
 import React from 'react'
+import { useLocation, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-const checkOut={
-    _id:"12323",
-    createdAt:new Date(),
-    checkoutItems:[
-        {
-            productId:"1",
-            name:"T-shirt",
-            size:"M",
-            color:"Red",
-            price:499,
-            quantity:2,
-            img:"https://picsum.photos/200?random=1",
-        },
-        {
-            productId:"2",
-            name:"Jeans",
-            size:"M",
-            color:"Blue",
-            price:200,
-            quantity:2,
-            img:"https://picsum.photos/200?random=2",
-        }
-    ],
-    shippingAddress:{
-        address:"123 Main St",
-        city:"New York",
-        state:"NY",
-        country:"USA"
-    }
-}
-
-const calculateEstimateDelivery=(createdAt)=>{
-    const orderDate=new Date(createdAt);
-    const estimatedDeliveryDate=new Date(orderDate.getTime() + 7*24*60*60*1000);
-    return estimatedDeliveryDate.toLocaleDateString();
-}
+const calculateEstimateDelivery = (createdAt) => {
+  const orderDate = createdAt ? new Date(createdAt) : new Date();
+  const estimatedDeliveryDate = new Date(orderDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+  return estimatedDeliveryDate.toLocaleDateString();
+};
 
 const OrderConfirmationPage = () => {
+  const location = useLocation();
+  const checkoutFromRoute = location.state?.checkout;
+  const checkoutFromStore = useSelector((state) => state.checkout.checkout);
+  const checkout = checkoutFromRoute || checkoutFromStore;
+
   return (
     <div className='max-w-4xl mx-auto p-6 bg-white'>
-      <h1 className='text-4xl font-bold text-center  text-emerald-700 mb-8'>
+      <h1 className='text-4xl font-bold text-center text-emerald-700 mb-8'>
         Thank you for your order!
       </h1>
-      {checkOut && (
-        <div className=' p-6 rounded-lg border'>
-            <div className='flex justify-between mb-20'>
-                {/* Order Id and Date */}
-                <div>
-                    <h2 className='text-xl font-semibold'>
-                        Order ID: {checkOut._id}
-                    </h2>
-                    <p className='text-gray-500'>
-                        Order date:{new Date(checkOut.createdAt).toLocaleDateString()}
-                    </p>
-                </div>
-                {/* Estimated DElivery */}
-                <div>
-                   <p className='text-emerald-700 text-sm'>
-                    Estimated Delivery:{" "}{calculateEstimateDelivery(checkOut.createdAt)}
-                    </p> 
-                </div>
+
+      {!checkout ? (
+        <div className='rounded-lg border p-6 text-center'>
+          <p className='text-gray-600 mb-4'>Your order has been placed successfully.</p>
+          <Link
+            to='/my-orders'
+            className='inline-flex items-center rounded-lg bg-TrendDrift-red px-5 py-3 text-white font-semibold hover:bg-[#017a96] transition'
+          >
+            View Orders
+          </Link>
+        </div>
+      ) : (
+        <div className='p-6 rounded-lg border'>
+          <div className='flex justify-between mb-20'>
+            <div>
+              <h2 className='text-xl font-semibold'>
+                Order ID: {checkout._id}
+              </h2>
+              <p className='text-gray-500'>
+                Order date: {new Date(checkout.createdAt || Date.now()).toLocaleDateString()}
+              </p>
             </div>
-            {/* Order Items */}
-            <div className='mb-20'>
-                {checkOut.checkoutItems.map((items)=>(
-                    <div key={items.productId} className='flex items-center mb-4'>
-                        <img src={items.img} alt={items.name} className='w-15 h-16 object-cover rounded-md mr-4' />
-                        <div>
-                            <h4 className='text-md font-semibold'>{items.name}</h4>
-                            <p className='text-sm text-gray-500'>{items.color}|{items.size}</p>
-                        </div>
-                        <div className='ml-auto text-right'>
-                            <p className="text-md">${items.price}</p>
-                            <p className='text-sm text-gray-500'>Qty: {items.quantity}</p>
-                        </div>
-                    </div>
-                ))}
+            <div>
+              <p className='text-emerald-700 text-sm'>
+                Estimated Delivery: {calculateEstimateDelivery(checkout.createdAt)}
+              </p>
             </div>
-            {/* PAyment and Delivery Info */}
-             <div className='grid grid-cols-2 gap-8'> {/*payment Info */}
+          </div>
+
+          <div className='mb-20'>
+            {checkout.checkoutItems?.map((item) => (
+              <div key={item.productId} className='flex items-center mb-4'>
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className='w-15 h-16 object-cover rounded-md mr-4'
+                />
                 <div>
-                    <h4 className='text-lg font-semibold mb-2'>Payment</h4>
-                    <p className='text-gray-600'>PayPal</p>
+                  <h4 className='text-md font-semibold'>{item.name}</h4>
+                  <p className='text-sm text-gray-500'>{item.color} | {item.size}</p>
                 </div>
-                <div>
-                    <h4 className='text-lg font-semibold mb-2'>Shipping Address</h4>
-                    <p className='text-gray-600'>{checkOut.shippingAddress.address}</p>
-                    <p className='text-gray-600'>{checkOut.shippingAddress.city}, {checkOut.shippingAddress.country}</p>
+                <div className='ml-auto text-right'>
+                  <p className='text-md'>${item.price}</p>
+                  <p className='text-sm text-gray-500'>Qty: {item.quantity}</p>
                 </div>
+              </div>
+            ))}
+          </div>
+
+          <div className='grid grid-cols-2 gap-8'>
+            <div>
+              <h4 className='text-lg font-semibold mb-2'>Payment</h4>
+              <p className='text-gray-600'>{checkout.paymentMethod || 'Razorpay'}</p>
             </div>
+            <div>
+              <h4 className='text-lg font-semibold mb-2'>Shipping Address</h4>
+              <p className='text-gray-600'>{checkout.shippingAddress?.address}</p>
+              <p className='text-gray-600'>
+                {checkout.shippingAddress?.city}, {checkout.shippingAddress?.country}
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default OrderConfirmationPage

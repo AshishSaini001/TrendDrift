@@ -1,55 +1,206 @@
-import React from "react";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
+import {
+  createProduct,
+  fetchAdminProducts,
+  updateProduct,
+} from "../../redux/slices/adminProductSlice";
+
+const initialProductData = {
+  name: "",
+  description: "",
+  price: 0,
+  discountPrice: 0,
+  countInStock: 0,
+  sku: "",
+  category: "",
+  brand: "",
+  sizes: [],
+  colors: [],
+  collections: "",
+  material: [],
+  gender: "Men",
+  images: [],
+  isFeatured: false,
+  isPublished: false,
+  tags: [],
+  dimensions: {
+    length: 0,
+    width: 0,
+    height: 0,
+  },
+  weight: 0,
+};
+
 const EditProductPage = () => {
   const { id } = useParams();
-  const [productData, setProductData] = useState({
-    name: "",
-    description: "",
-    price: 0,
-    countInStock: 0,
-    sku: "",
-    category: "",
-    brand: "",
-    sizes: [],
-    colors: [],
-    collections: [],
-    material: "",
-    gender: "",
-    images: [
-      {
-        url: "https://picsum.photos/150?random=1",
-      },
-      {
-        url: "https://picsum.photos/150?random=2",
-      },
-    ],
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const { products, loading } = useSelector((state) => state.adminProducts);
+  const [productData, setProductData] = useState(initialProductData);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({
+    current: 0,
+    total: 0,
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    if (!user || user.role?.toLowerCase() !== "admin") {
+      navigate("/");
+      return;
+    }
+
+    if (products.length === 0) {
+      dispatch(fetchAdminProducts());
+    }
+  }, [dispatch, navigate, products.length, user]);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    const selectedProduct = products.find((item) => item._id === id);
+    if (!selectedProduct) {
+      return;
+    }
+
     setProductData({
-      ...productData,
-      [name]: value,
+      name: selectedProduct.name || "",
+      description: selectedProduct.description || "",
+      price: selectedProduct.price || 0,
+      discountPrice: selectedProduct.discountPrice || 0,
+      countInStock: selectedProduct.countInStock || 0,
+      sku: selectedProduct.sku || "",
+      category: selectedProduct.category || "",
+      brand: selectedProduct.brand || "",
+      sizes: Array.isArray(selectedProduct.sizes) ? selectedProduct.sizes : [],
+      colors: Array.isArray(selectedProduct.colors)
+        ? selectedProduct.colors
+        : [],
+      collections: selectedProduct.collections || "",
+      material: Array.isArray(selectedProduct.material)
+        ? selectedProduct.material
+        : [],
+      gender: selectedProduct.gender || "Men",
+      images: Array.isArray(selectedProduct.images) ? selectedProduct.images : [],
+      isFeatured: Boolean(selectedProduct.isFeatured),
+      isPublished: Boolean(selectedProduct.isPublished),
+      tags: Array.isArray(selectedProduct.tags) ? selectedProduct.tags : [],
+      dimensions: selectedProduct.dimensions || {
+        length: 0,
+        width: 0,
+        height: 0,
+      },
+      weight: selectedProduct.weight || 0,
     });
+  }, [id, products]);
+
+  const handleChange = (e) => {
+    const { name, type, checked, value } = e.target;
+    setProductData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    console.log("Selected file:", file);
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length === 0) {
+      return;
+    }
+
+    setIsUploadingImages(true);
+    setUploadProgress({ current: 0, total: selectedFiles.length });
+
+    const uploadedImages = [];
+
+    for (let index = 0; index < selectedFiles.length; index += 1) {
+      const file = selectedFiles[index];
+      const payload = new FormData();
+      payload.append("image", file);
+
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+          payload,
+        );
+        uploadedImages.push({
+          url: response.data.imageUrl,
+          altText: productData.name || "Product image",
+        });
+      } catch (err) {
+        toast.error(err?.response?.data?.message || "Image upload failed.");
+      } finally {
+        setUploadProgress((prev) => ({
+          ...prev,
+          current: index + 1,
+        }));
+      }
+    }
+
+    if (uploadedImages.length > 0) {
+      setProductData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...uploadedImages],
+      }));
+      toast.success("Image uploaded successfully.");
+    }
+
+    setIsUploadingImages(false);
+    setUploadProgress({ current: 0, total: 0 });
   };
 
   const handleRemoveImage = (index) => {
-    setProductData({
-      ...productData,
-      images: productData.images.filter((_, i) => i !== index),
-    });
+    setProductData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Updated product data:", productData);
+
+    if (isUploadingImages) {
+      toast.error("Please wait until image upload is complete.");
+      return;
+    }
+
+    const payload = {
+      ...productData,
+      price: Number(productData.price),
+      discountPrice: Number(productData.discountPrice) || 0,
+      countInStock: Number(productData.countInStock),
+      weight: Number(productData.weight) || 0,
+      dimensions: {
+        length: Number(productData.dimensions.length) || 0,
+        width: Number(productData.dimensions.width) || 0,
+        height: Number(productData.dimensions.height) || 0,
+      },
+      sizes: productData.sizes.filter(Boolean),
+      colors: productData.colors.filter(Boolean),
+      material: productData.material.filter(Boolean),
+      tags: productData.tags.filter(Boolean),
+    };
+
+    const action = id
+      ? updateProduct({ id, productData: payload })
+      : createProduct(payload);
+
+    dispatch(action)
+      .unwrap()
+      .then(() => {
+        toast.success(id ? "Product updated successfully." : "Product created successfully.");
+        navigate("/admin/products");
+      })
+      .catch((err) => {
+        toast.error(err?.message || "Failed to save product.");
+      });
   };
 
   return (
@@ -57,8 +208,9 @@ const EditProductPage = () => {
       <h2 className="text-3xl font-bold mb-6">
         {id ? "Edit Product" : "Add Product"}
       </h2>
+      {loading && <p>Loading product details...</p>}
+
       <form onSubmit={handleSubmit}>
-        {/* Name */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Product Name
@@ -74,7 +226,6 @@ const EditProductPage = () => {
           />
         </div>
 
-        {/* Description */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Description
@@ -90,7 +241,6 @@ const EditProductPage = () => {
           ></textarea>
         </div>
 
-        {/* Price */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Price
@@ -101,11 +251,26 @@ const EditProductPage = () => {
             name="price"
             value={productData.price}
             onChange={handleChange}
+            min="0"
+            step="0.01"
             className="w-full border border-gray-300 rounded-md p-2"
             required
           />
         </div>
-        {/* Count In Stock */}
+
+        <div className="mb-6">
+          <label className="block font-semibold mb-2">Discount Price</label>
+          <input
+            type="number"
+            name="discountPrice"
+            value={productData.discountPrice}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+            className="w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Count In Stock
@@ -116,11 +281,12 @@ const EditProductPage = () => {
             name="countInStock"
             value={productData.countInStock}
             onChange={handleChange}
+            min="0"
             className="w-full border border-gray-300 rounded-md p-2"
             required
           />
         </div>
-        {/* SKU */}
+
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             SKU
@@ -136,7 +302,6 @@ const EditProductPage = () => {
           />
         </div>
 
-        {/* Category */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Category
@@ -152,7 +317,6 @@ const EditProductPage = () => {
           />
         </div>
 
-        {/* Brand */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Brand
@@ -168,7 +332,6 @@ const EditProductPage = () => {
           />
         </div>
 
-        {/* Sizes */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Sizes (comma separated)
@@ -179,17 +342,16 @@ const EditProductPage = () => {
             name="sizes"
             value={productData.sizes.join(", ")}
             onChange={(e) =>
-              setProductData({
-                ...productData,
-                sizes: e.target.value.split(",").map((s) => s.trim()),
-              })
+              setProductData((prev) => ({
+                ...prev,
+                sizes: e.target.value.split(",").map((item) => item.trim()),
+              }))
             }
             className="w-full border border-gray-300 rounded-md p-2"
             required
           />
         </div>
 
-        {/* Colors */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Colors (comma separated)
@@ -200,54 +362,51 @@ const EditProductPage = () => {
             name="colors"
             value={productData.colors.join(", ")}
             onChange={(e) =>
-              setProductData({
-                ...productData,
-                colors: e.target.value.split(",").map((c) => c.trim()),
-              })
+              setProductData((prev) => ({
+                ...prev,
+                colors: e.target.value.split(",").map((item) => item.trim()),
+              }))
             }
             className="w-full border border-gray-300 rounded-md p-2"
             required
           />
         </div>
 
-        {/* Collections */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
-            Collections (comma separated)
+            Collection
             <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             name="collections"
-            value={productData.collections.join(", ")}
-            onChange={(e) =>
-              setProductData({
-                ...productData,
-                collections: e.target.value.split(",").map((c) => c.trim()),
-              })
-            }
-            className="w-full border border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-
-        {/* Material */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">
-            Material
-            <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="material"
-            value={productData.material}
+            value={productData.collections}
             onChange={handleChange}
             className="w-full border border-gray-300 rounded-md p-2"
             required
           />
         </div>
 
-        {/* gender */}
+        <div className="mb-6">
+          <label className="block font-semibold mb-2">
+            Material (comma separated)
+            <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="material"
+            value={productData.material.join(", ")}
+            onChange={(e) =>
+              setProductData((prev) => ({
+                ...prev,
+                material: e.target.value.split(",").map((item) => item.trim()),
+              }))
+            }
+            className="w-full border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
+
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Gender
@@ -260,12 +419,113 @@ const EditProductPage = () => {
             className="w-full border border-gray-300 rounded-md p-2"
             required
           >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="Men">Men</option>
+            <option value="Women">Women</option>
+            <option value="Unisex">Unisex</option>
           </select>
         </div>
 
-        {/* Image upload */}
+        <div className="mb-6">
+          <label className="block font-semibold mb-2">Tags (comma separated)</label>
+          <input
+            type="text"
+            name="tags"
+            value={productData.tags.join(", ")}
+            onChange={(e) =>
+              setProductData((prev) => ({
+                ...prev,
+                tags: e.target.value.split(",").map((item) => item.trim()),
+              }))
+            }
+            className="w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block font-semibold mb-2">Dimensions (L/W/H)</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input
+              type="number"
+              value={productData.dimensions.length}
+              onChange={(e) =>
+                setProductData((prev) => ({
+                  ...prev,
+                  dimensions: {
+                    ...prev.dimensions,
+                    length: e.target.value,
+                  },
+                }))
+              }
+              className="w-full border border-gray-300 rounded-md p-2"
+              placeholder="Length"
+            />
+            <input
+              type="number"
+              value={productData.dimensions.width}
+              onChange={(e) =>
+                setProductData((prev) => ({
+                  ...prev,
+                  dimensions: {
+                    ...prev.dimensions,
+                    width: e.target.value,
+                  },
+                }))
+              }
+              className="w-full border border-gray-300 rounded-md p-2"
+              placeholder="Width"
+            />
+            <input
+              type="number"
+              value={productData.dimensions.height}
+              onChange={(e) =>
+                setProductData((prev) => ({
+                  ...prev,
+                  dimensions: {
+                    ...prev.dimensions,
+                    height: e.target.value,
+                  },
+                }))
+              }
+              className="w-full border border-gray-300 rounded-md p-2"
+              placeholder="Height"
+            />
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block font-semibold mb-2">Weight</label>
+          <input
+            type="number"
+            name="weight"
+            value={productData.weight}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+            className="w-full border border-gray-300 rounded-md p-2"
+          />
+        </div>
+
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label className="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="isFeatured"
+              checked={productData.isFeatured}
+              onChange={handleChange}
+            />
+            <span>Featured product</span>
+          </label>
+          <label className="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="isPublished"
+              checked={productData.isPublished}
+              onChange={handleChange}
+            />
+            <span>Published</span>
+          </label>
+        </div>
+
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Upload Image
@@ -276,19 +536,26 @@ const EditProductPage = () => {
             accept="image/*"
             multiple
             onChange={handleImageChange}
+            disabled={isUploadingImages}
             className="w-full border border-gray-300 rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-gray-800 file:text-white file:cursor-pointer hover:file:bg-gray-700"
           />
+          {isUploadingImages && (
+            <p className="mt-2 text-sm text-blue-600">
+              Uploading images {uploadProgress.current}/{uploadProgress.total}...
+            </p>
+          )}
           <div className="flex flex-wrap gap-4 mt-4">
             {productData.images.map((img, index) => (
               <div key={index} className="relative">
                 <img
                   src={img.url}
-                  alt={`Product ${index}`}
+                  alt={img.altText || `Product ${index + 1}`}
                   className="w-24 h-24 object-cover rounded-md shadow-md"
                 />
                 <button
                   type="button"
                   onClick={() => handleRemoveImage(index)}
+                  disabled={isUploadingImages}
                   className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 cursor-pointer"
                 >
                   <FaTimes />
@@ -297,11 +564,17 @@ const EditProductPage = () => {
             ))}
           </div>
         </div>
+
         <button
           type="submit"
+          disabled={isUploadingImages}
           className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors cursor-pointer"
         >
-          {id ? "Update Product" : "Add Product"}
+          {isUploadingImages
+            ? `Uploading ${uploadProgress.current}/${uploadProgress.total}...`
+            : id
+              ? "Update Product"
+              : "Add Product"}
         </button>
       </form>
     </div>

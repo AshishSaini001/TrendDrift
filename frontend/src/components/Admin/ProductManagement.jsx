@@ -1,22 +1,61 @@
 import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import {
+  deleteProduct,
+  fetchAdminProducts,
+} from "../../redux/slices/adminProductSlice";
+
 const ProductManagement = () => {
-  const products = [
-    {
-      _id: 1,
-      name: "Product 1",
-      price: 499,
-      sku: 20,
-    },
-  ];
-  const handleDelte = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      console.log("Product deleted with id:", id);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const { products, loading, error } = useSelector((state) => state.adminProducts);
+
+  useEffect(() => {
+    if (!user || user.role?.toLowerCase() !== "admin") {
+      navigate("/");
+      return;
     }
+    dispatch(fetchAdminProducts());
+  }, [dispatch, navigate, user]);
+
+  const handleDelete = (id) => {
+    toast("Delete this product?", {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          try {
+            await dispatch(deleteProduct(id)).unwrap();
+            toast.success("Product deleted successfully.");
+          } catch (err) {
+            toast.error(err?.message || "Failed to delete product.");
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+    });
   };
+
+  if (loading) {
+    return <p>Loading products...</p>;
+  }
+  if (error) {
+    return <p className="text-red-500">Error: {error}</p>;
+  }
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6">Product Management</h2>
+      {loading && <p>Loading products...</p>}
+      {error && <p className="text-red-500">Error: {error}</p>}
       <div className="flex justify-end mb-4">
         <Link to="/admin/products/new" className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
           + Add Product
@@ -52,7 +91,7 @@ const ProductManagement = () => {
                       Edit
                     </Link>
                     <button
-                      onClick={() => handleDelte(product._id)}
+                      onClick={() => handleDelete(product._id)}
                       className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 cursor-pointer"
                     >
                       Delete

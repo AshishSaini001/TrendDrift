@@ -80,7 +80,7 @@ const FilterSidebar = () => {
         const newPrice=e.target.value;
         setPriceRange([0,newPrice]);
         const newFilters={...filter ,minPrice:0,maxPrice:newPrice};
-        setFilter(filter);
+        setFilter(newFilters);
         updateURLParams(newFilters);
     }
 
@@ -164,7 +164,7 @@ const FilterSidebar = () => {
                 {materials.map((materials)=>(
                 <div key={materials} className='flex items-center mb-1'>
                     <input type="checkbox" 
-                    name="materials" 
+                    name="material" 
                     value={materials}
                 onChange={handleFilterChange}
                 checked={filter.material.includes(materials)}
@@ -186,7 +186,7 @@ const FilterSidebar = () => {
                         value={brand}
                 onChange={handleFilterChange}
                 checked={filter.brand.includes(brand)}
-                        className='mr-2 h-4 w-4 flex-shrink-0 text-blue-500 focus:ring-blue-400 border-gray-300 cursor-pointer'
+                    className='mr-2 h-4 w-4 shrink-0 text-blue-500 focus:ring-blue-400 border-gray-300 cursor-pointer'
                     />
                     <span className='text-gray-700 whitespace-nowrap'>{brand}</span>
                 </div>

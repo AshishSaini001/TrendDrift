@@ -44,8 +44,12 @@ router.put("/:id", auth, adminAuth, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    user.name = name;
-    user.email = email;
+    if (name !== undefined) {
+      user.name = name;
+    }
+    if (email !== undefined) {
+      user.email = email;
+    }
     if (password) {
       user.password = password;
     }
@@ -54,7 +58,8 @@ router.put("/:id", auth, adminAuth, async (req, res) => {
     }
     user.role = role || user.role;
     await user.save();
-    res.status(200).json({ message: "User updated successfully" });
+    const updatedUser = await User.findById(user._id).select("-password");
+    res.status(200).json(updatedUser);
   } catch (err) {
     console.error("Updating user failed:", err.message);
     res.status(500).json({ message: "Internal Server Error" });
@@ -85,7 +90,8 @@ router.post("/", auth, adminAuth, async (req, res) => {
       role: role || "customer",
     });
     await newUser.save();
-    res.status(201).json({ message: "User created successfully" });
+    const createdUser = await User.findById(newUser._id).select("-password");
+    res.status(201).json(createdUser);
   } catch (err) {
     console.error("Creating user failed:", err.message);
     res.status(500).json({ message: "Internal Server Error" });

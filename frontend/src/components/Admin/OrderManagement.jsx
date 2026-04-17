@@ -1,18 +1,30 @@
 import React from 'react'
-
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllOrders, updateOrderStatus } from '../../redux/slices/adminOrderSlice';
+import { useNavigate } from 'react-router-dom';
 const OrderManagement = () => {
-  const orders=[
-    {
-      _id:'123234',
-      user:{
-        name:'John Doe',    
-     },
-     totalPrice:110,
-     status:'Processing',
+ const dispatch = useDispatch();
+ const navigate = useNavigate();
+ const {user}=useSelector((state)=>state.auth);
+ const {orders,totalOrders,totalSales,loading,error}=useSelector((state)=>state.adminOrders);
+
+  useEffect(()=>{
+    if(!user || user.role?.toLowerCase() !== "admin"){
+      navigate("/");
+      return;
     }
-  ];
+    dispatch(fetchAllOrders());
+  },[user,navigate,dispatch])
   const handleStatusChange=(orderId,status)=>{
     // Implement status change logic here
+    dispatch(updateOrderStatus({id:orderId,status}))
+  }
+  if(loading){
+    return <p>Loading...</p>
+  }
+  if(error){
+    return <p className='text-red-500'>Error fetching orders: {error}</p>
   }
   return (
     <div className='max-w-7xl mx-auto p-6'>
@@ -33,21 +45,21 @@ const OrderManagement = () => {
               orders.map((order)=>(
                 <tr key={order._id} className="border-b bg-white">
                   <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap">#{order._id}</td>
-                  <td className="py-4 px-4">{order.user.name}</td>
-                  <td className="py-4 px-4">${order.totalPrice}</td>
+                  <td className="py-4 px-4">{order.user?.name || "Unknown User"}</td>
+                  <td className="py-4 px-4">${Number(order.totalPrice || 0).toFixed(2)}</td>
                   <td className="py-4 px-4">
                     <select value={order.status} onChange={(e)=>handleStatusChange(order._id,e.target.value)}
                       className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 cursor-pointer'
                       >
-                      <option value="Processing">Processing</option>
-                      <option value="Shipped">Shipped</option>
-                      <option value="Delivered">Delivered</option>
-                      <option value="Cancelled">Cancelled</option>
+                      <option value="processing">Processing</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
                       </select>
                   </td>
                   <td className="py-4 px-4">
                     <button 
-                    onClick={()=>handleStatusChange(order._id,"Delivered")}
+                    onClick={()=>handleStatusChange(order._id,"delivered")}
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
                       Mark as Delivered
                     </button>

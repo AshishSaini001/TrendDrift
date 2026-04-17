@@ -1,42 +1,30 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useDispatch ,useSelector} from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchUserOrders } from "../redux/slices/orderSlice";
+
+const formatStatus = (status) => {
+  if (!status) return "Unknown";
+  return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+};
+
 const MyOrdersPage = () => {
-  const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+  const dispatch=useDispatch();
+  const {orders ,loading,error}=useSelector((state)=> state.orders);
   useEffect(() => {
-    setTimeout(() => {
-      const mockOrders = [
-        {
-          _id: "12345",
-          createdAt: new Date(),
-          shippingAddress: { city: "New York", country: "USA" },
-          orderItems: [
-            {
-              name: "Product 1",
-              image: "https://picsum.photos/500/500?random=1",
-            },
-          ],
-          totalPrice: 99.99,
-          isPaid: true,
-        },
-        {
-          _id: "67890",
-          createdAt: new Date(),
-          shippingAddress: { city: "Los Angeles", country: "USA" },
-          orderItems: [
-            {
-              name: "Product 2",
-              image: "https://picsum.photos/500/500?random=2",
-            },
-          ],
-          totalPrice: 149.99,
-          isPaid: false,
-        },
-      ];
-      setOrders(mockOrders);
-    }, 1000);
-  }, []);
+    dispatch(fetchUserOrders());
+  }, [dispatch]);
+
+  if (loading) {
+    return <div className="text-center py-10">Loading your orders...</div>;
+  }
+  if (error) {
+    return <div className="text-center py-10 text-red-600">Error: {error}</div>;
+  }
+
+
 
   const handleRowClick = (orderId) => {
     // Navigate to order details page
@@ -106,11 +94,11 @@ const MyOrdersPage = () => {
                   </td>
                   <td className="py-2 px-2 sm:py-4 font-medium text-gray-900 whitespace-nowrap">
                     <span
-                      className={`${order.isPaid ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}
+                      className={`${order.status === "delivered" ? "bg-green-100 text-green-700" : order.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}
                             px-2 py-1 rounded-full text-xs sm:text-sm font-medium
                             `}
                     >
-                      {order.isPaid ? "Paid" : "Pending"}
+                      {formatStatus(order.status)}
                     </span>
                   </td>
                 </tr>

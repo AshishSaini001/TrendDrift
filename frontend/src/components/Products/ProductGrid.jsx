@@ -1,7 +1,20 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const ProductGrid = ({ products }) => {
+const ProductGrid = ({ products,loading,error }) => {
+  if(loading){
+    return <p className="text-center">Loading products...</p>;
+  }
+  if(error){
+    return <p className="text-center text-red-500">Error loading products: {error}</p>;
+  }
+  if (!products || products.length === 0) {
+    return (
+      <p className="text-center text-gray-600 py-10">
+        No products found for the selected filters.
+      </p>
+    );
+  }
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 px-4">
       {products.map((product) => (
@@ -23,7 +36,7 @@ const ProductCard = ({ product }) => {
 
           {/* Skeleton Loader */}
           {loading && (
-            <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
+            <div className="absolute inset-0 animate-pulse bg-linear-to-r from-gray-200 via-gray-300 to-gray-200" />
           )}
 
           <img

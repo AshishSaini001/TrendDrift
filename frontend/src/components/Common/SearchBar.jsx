@@ -1,17 +1,38 @@
 
-import {useState} from 'react'
+import { useEffect, useState } from 'react'
 import { HiMagnifyingGlass, HiMiniXMark } from 'react-icons/hi2';
+import { useDispatch } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { setFilters } from '../../redux/slices/productsSlice';
+
 const SearchBar = () => {
         const [searchTerm, setSearchTerm] = useState('');
         const [isOpen, setIsOpen] = useState(false);
+        const dispatch=useDispatch();
+        const navigate=useNavigate();
+        const location = useLocation();
+
+        useEffect(() => {
+          const params = new URLSearchParams(location.search);
+          setSearchTerm(params.get('search') || '');
+        }, [location.search]);
+
 
         const handleSearchToggle=()=>{
             setIsOpen(!isOpen);
         }
         const handleSearch=(e)=>{
             e.preventDefault();
-            // Implement search logic here
-            console.log("Searching for:", searchTerm);
+          const normalizedSearch = searchTerm.trim();
+          dispatch(setFilters({ search: normalizedSearch }));
+          const params = new URLSearchParams(location.search);
+          if (normalizedSearch) {
+            params.set('search', normalizedSearch);
+          } else {
+            params.delete('search');
+          }
+          const nextQuery = params.toString();
+          navigate(`/collections/all${nextQuery ? `?${nextQuery}` : ''}`);
             setIsOpen(false);
         }
 

@@ -136,7 +136,7 @@ router.get("/", async (req, res) => {
     if (cart) {
       return res.status(200).json(cart);
     } else {
-      return res.status(404).json({ message: "Cart is Empty" });
+      return res.status(200).json({ products: [], totalPrice: 0 });
     }
   } catch (err) {
     console.log("Error fetching cart:", err.message);
@@ -166,7 +166,7 @@ router.delete("/", async (req, res) => {
         0,
       );
       await cart.save();
-      return res.status(200).json({ message: "Product removed from cart" });
+      return res.status(200).json(cart);
     } else {
       return res.status(404).json({ message: "Cart not found" });
     }

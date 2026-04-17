@@ -4,10 +4,42 @@ import { useState } from 'react';
 import FilterSidebar from '../components/Products/FilterSidebar';
 import SortOptions from '../components/Products/SortOptions';
 import ProductGrid from '../components/Products/ProductGrid';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProductsByFilters } from '../redux/slices/productsSlice.js';
+
+const PRODUCTS_PER_PAGE = 12;
+
 const CollectionPage = () => {
-  const [products, setProducts] = useState([]);
+    const {collection} =useParams();
+    const [searchParams]=useSearchParams();
+    const dispatch=useDispatch();
+    const {products ,loading,error}=useSelector((state)=> state.products);
+    const queryParams=Object.fromEntries([...searchParams]);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const sidebarRef =useRef(null);
   const [isSidebarOpen,setIsSidebarOpen]=useState(false);
+
+useEffect(()=>{
+    dispatch(fetchProductsByFilters({collection,...queryParams}));
+},[dispatch,collection,searchParams]);
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [collection, searchParams.toString()]);
+
+const totalPages = Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE));
+const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+const paginatedProducts = products.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+
+const handlePageChange = (page) => {
+  if (page < 1 || page > totalPages) {
+    return;
+  }
+  setCurrentPage(page);
+};
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   }
@@ -22,108 +54,9 @@ const CollectionPage = () => {
     return ()=>{
         document.removeEventListener("mousedown",handleClickOutSide);
     }
-    
-
-  });
-
-  useEffect(() => {
-    // Simulate fetching products from an API
-    setTimeout(() => {
-      const fetchedProducts = [
-    {
-        _id:1,
-        name: "Casual Blue Jeans",
-        price: 49.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=21",
-            altText: "Casual Blue Jeans Image"
-            }
-        ]
-    },
-    {
-        _id:2,
-        name: "Red Hoodie",
-        price: 39.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=22",
-            altText: "Red Hoodie Image"
-            }
-        ]
-    },
-    {
-        _id:3,
-        name: "Black Sneakers",
-        price: 59.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=23",
-            altText: "Black Sneakers Image" 
-            }
-        ]
-    },
-    {
-        _id:4,
-        name: "Leather Belt",       
-        price: 24.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=24",
-            altText: "Leather Belt Image"
-            }
-        ]
-    },
-    {
-        _id:5,
-        name: "Summer Dress",
-        price: 59.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=25",
-            altText: "Summer Dress Image"
-            }
-        ]
-    },
-    {
-        _id:6,
-        name: "Running Shoes",
-        price: 89.99,
-        images:[  
-            {
-            url: "https://picsum.photos/500/500/?random=26",
-            altText: "Running Shoes Image"
-            }
-        ]
-    },
-    {
-        _id:7,
-        name: "Formal Shirt",
-        price: 45.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=27",
-            altText: "Formal Shirt Image"
-            }
-        ]
-    },
-    {
-        _id:8,
-        name: "Denim Jacket",
-        price: 79.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=28",
-            altText: "Denim Jacket Image"
-            }
-        ]
-    }
-]
-      setProducts(fetchedProducts);
-    },1000);
-       
-          
   }, []);
+
+  
 
   return (
     <div className="flex flex-col lg:flex-row">
@@ -149,7 +82,46 @@ const CollectionPage = () => {
                 <SortOptions />
 
                 {/* Products Grid */}
-                <ProductGrid products={products} />
+                <ProductGrid products={paginatedProducts} loading={loading} error={error} />
+
+                {!loading && !error && products.length > 0 && (
+                  <div className="mt-8 flex flex-col items-center gap-4">
+                    <p className="text-sm text-gray-600">
+                      Showing {startIndex + 1}-{Math.min(startIndex + PRODUCTS_PER_PAGE, products.length)} of {products.length} products
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        Prev
+                      </button>
+                      {Array.from({ length: totalPages }, (_, index) => {
+                        const page = index + 1;
+                        return (
+                          <button
+                            key={page}
+                            type="button"
+                            onClick={() => handlePageChange(page)}
+                            className={`px-3 py-1 rounded border ${currentPage === page ? "bg-black text-white border-black" : "border-gray-300"} cursor-pointer`}
+                          >
+                            {page}
+                          </button>
+                        );
+                      })}
+                      <button
+                        type="button"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                )}
 
             </div>
 

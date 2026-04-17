@@ -1,33 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RazorpayButton from "./RazorpayButton";
-const cart = {
-  products: [
-    {
-      productId: 1,
-      name: "T-shirt",
-      size: "M",
-      color: "Red",
-      price: 499,
-      quantity: 2,
-      img: "https://picsum.photos/200?random=1",
-    },
-    {
-      productId: 2,
-      name: "Jeans",
-      size: "M",
-      color: "Blue",
-      price: 499,
-      quantity: 2,
-      img: "https://picsum.photos/200?random=2",
-    },
-  ],
-  totalPrice: 199,
-};
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
+import { createCheckout } from "../../redux/slices/checkoutSlice";
+import { clearCart } from "../../redux/slices/cartSlice";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const [CheckoutId, setCheckoutId] = useState(null);
+  const dispatch=useDispatch();
+  const {cart ,loading,error} = useSelector((state) => state.cart);
+  const {user}=useSelector((state)=> state.auth);
+
+  const [checkoutId, setCheckoutId] = useState(null);
+  const [checkoutData, setCheckoutData] = useState(null);
+  const [isCheckoutCompleted, setIsCheckoutCompleted] = useState(false);
   const [shippingAddress, setShippingAddress] = useState({
     firstName: "",
     lastName: "",
@@ -38,14 +26,80 @@ const Checkout = () => {
     country: "",
     phone: "",
   });
-  const handleCheckOut = (e) => {
+
+  // Ensure cart is loaded and user is authenticated before allowing checkout
+  useEffect(()=>{
+    if (isCheckoutCompleted) return;
+
+    if(!loading && (!cart || cart.products.length === 0)){
+      navigate("/collections/all");
+    }
+  },[cart, loading, navigate, isCheckoutCompleted]);
+
+
+
+  const handleCheckOut = async (e) => {
     e.preventDefault();
-    setCheckoutId(123);
+    if(cart && cart.products.length > 0){
+      const result = await dispatch(createCheckout({
+        checkoutItems:cart.products,
+        shippingAddress,
+        paymentMethod:"razorpay",
+        totalPrice:cart.totalPrice,
+      }));
+
+      if(createCheckout.fulfilled.match(result) && result.payload?._id){
+        setCheckoutId(result.payload._id); // set checkout id if checkout was successful
+        setCheckoutData(result.payload);
+      }
+
+    } else {
+      navigate("/collections/all");
+    }
   };
-  const handlePaymentSuccess = (paymentDetails) => {
-    alert("Payment Successful! Thank you for your purchase.");
-    navigate("/order-confirmation");
+  const handlePaymentSuccess = async (details) => {
+    try {
+      if (!checkoutId) return;
+
+      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`, {
+        paymentStatus: "paid",
+        paymentDetails: details,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
+      });
+      if(response.status === 200){
+        await handleFinalizeCheckout(checkoutId);
+      }
+    } catch (error) {
+      console.error("Payment verification failed:", error);
+    }
+    
   };
+
+  const handleFinalizeCheckout = async (checkoutId) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/finalize`, { }, 
+        {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
+      });
+      if(response.status === 200){
+        setIsCheckoutCompleted(true);
+        toast.success("Payment successful! Your order has been placed.");
+        dispatch(clearCart());
+        navigate("/order-confirmation", { state: { checkout: checkoutData } });
+      }
+    } catch (error) {
+      console.error("Checkout finalization failed:", error);
+    }
+  };
+
+  if(loading ) return <p>Loading cart ...</p>
+  if(error) return <p className="text-red-600">Error loading cart: {error}</p>
+  if(!cart || cart.products.length === 0) return <p>Your cart is empty. Please add items to cart before checkout.</p>
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking-tighter">
@@ -57,7 +111,7 @@ const Checkout = () => {
             <label className="block text-gray-700">Email</label>
             <input
               type="email"
-              value="user@example.com"
+              value={user?.email || ""}
               className="w-full p-2 border rounded"
               disabled
             />
@@ -174,7 +228,7 @@ const Checkout = () => {
             />
           </div>
           <div className="mt-6">
-            {!CheckoutId ? (
+            {!checkoutId ? (
               <button
                 type="submit"
                 className=" w-full bg-TrendDrift-red text-white px-4 py-3 rounded cursor-pointer hover:bg-[#017a96] transition"
@@ -187,7 +241,7 @@ const Checkout = () => {
                 <RazorpayButton
                   amount={cart.totalPrice}
                   onSuccess={handlePaymentSuccess}
-                  onError={(err) => alert("Payment failed. Try Again.")}
+                  onError={() => toast.error("Payment failed. Try again.")}
                 />
               </div>
             )}
@@ -205,7 +259,7 @@ const Checkout = () => {
             >
               <div className="flex items-start">
                 <img
-                  src={product.img}
+                  src={product.image}
                   alt={product.name}
                   className="w-20 h-24 object-cover mr-4"
                 />

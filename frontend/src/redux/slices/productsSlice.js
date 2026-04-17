@@ -70,25 +70,24 @@ export const updateProduct = createAsyncThunk("products/updateProduct", async ({
 const productsSlice = createSlice({
   name: "products",
   initialState: {
-    products:[],
-    selectedPrduct: null, //Store details of the selected product
-    similarProducts: [], //Store similar products for the selected product
+    products: [],
+    selectedProduct: null, // Store details of the selected product
+    similarProducts: [], // Store similar products for the selected product
     loading: false,
     error: null,
-    filters:{
-        category:"",
-        size:"",
-        color:"",
-        gender:"",
-        minPrice:"",
-        maxPrice:"",
-        sortBy:"",
-        search:"",
-        material:"",
-        brand:"",
-        limit:""
-
-    }
+    filters: {
+      category: "",
+      size: "",
+      color: "",
+      gender: "",
+      minPrice: "",
+      maxPrice: "",
+      sortBy: "",
+      search: "",
+      material: "",
+      brand: "",
+      limit: "",
+    },
   },
     reducers: {
       setFilters:(state,action)=>{
@@ -145,7 +144,7 @@ const productsSlice = createSlice({
             })
             .addCase(updateProduct.fulfilled, (state, action) => {
                 state.loading = false;
-                state.updatedProduct = action.payload;
+                const updatedProduct = action.payload;
                 const index = state.products.findIndex((product) => product._id === updatedProduct._id);
                 if (index !== -1) {
                     state.products[index] = updatedProduct;
@@ -162,7 +161,7 @@ const productsSlice = createSlice({
             })
             .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
                 state.loading = false;
-                state.products = action.payload;
+                state.similarProducts = Array.isArray(action.payload) ? action.payload : [];
             })
             .addCase(fetchSimilarProducts.rejected, (state, action) => {
                 state.loading = false;

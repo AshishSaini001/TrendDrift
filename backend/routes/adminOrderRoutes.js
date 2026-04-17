@@ -23,18 +23,30 @@ router.put("/:id", auth, adminAuth, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (order) {
-      order.status = req.body.status || order.status;
-      order.isDelivered =
-        req.body.status === "Delivered" ? true : order.isDelivered;
-      order.deliveredAt =
-        req.body.status === "Delivered" ? Date.now() : order.deliveredAt;
+      const nextStatus = req.body.status
+        ? String(req.body.status).toLowerCase()
+        : order.status;
+      const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+
+      if (!validStatuses.includes(nextStatus)) {
+        return res.status(400).json({ message: "Invalid order status" });
+      }
+
+      order.status = nextStatus;
+      if (nextStatus === "delivered") {
+        order.isDelivered = true;
+        order.deliveredAt = order.deliveredAt || Date.now();
+      } else {
+        order.isDelivered = false;
+        order.deliveredAt = null;
+      }
       const updatedOrder = await order.save();
       res.json(updatedOrder);
     } else {
       res.status(404).json({ message: "Order not found" });
     }
   } catch (err) {
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: err.message || "Internal Server Error" });
   }
 });
 
@@ -55,3 +67,5 @@ router.delete("/:id", auth, adminAuth, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+module.exports = router;

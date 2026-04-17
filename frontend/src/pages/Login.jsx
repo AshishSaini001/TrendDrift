@@ -1,24 +1,40 @@
 import React from 'react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import login from '../assets/login.webp'
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 import { loginUser } from '../redux/slices/authSlice';
-import { useDispatch } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const dispatch = useDispatch();
+  const navigate=useNavigate();
+  const location=useLocation();
+  const { loading, error } = useSelector((state)=> state.auth);
+
+  // Preserve query param only for registering from login page; login always goes home on success.
+  const redirect = new URLSearchParams(location.search).get('redirect') || '/';
+
 
   const toggleVisible=()=>{
     setIsVisible(!isVisible);
   }
-  const handleSubmit =(e)=>{
+  const handleSubmit = async (e)=>{
         e.preventDefault();
-        dispatch(loginUser({email, password}));
+        setSubmitError('');
+        const result = await dispatch(loginUser({email, password}));
+        if (loginUser.fulfilled.match(result)) {
+          navigate('/');
+          return;
+        }
+
+        const message = result.payload?.message || result.error?.message || 'Login failed';
+        setSubmitError(message);
     }
 
   return (
@@ -63,10 +79,17 @@ const Login = () => {
           {isVisible ?(<AiFillEyeInvisible />) : (<AiFillEye />)}
         </span>
       </div>
-      <button type='submit' className='w-full bg-TrendDrift-red text-white p-2 rounded-lg font-semibold hover:bg-[#017a96] transition cursor-pointer'>Sign In</button>
+      <button type='submit' disabled={loading} className={`w-full bg-TrendDrift-red text-white p-2 rounded-lg font-semibold transition ${loading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#017a96] cursor-pointer'}`}>
+        {loading ? 'Signing In...' : 'Sign In'}
+      </button>
+      {(submitError || error) && (
+        <p className='mt-4 text-sm text-red-600 text-center'>
+          {submitError || error}
+        </p>
+      )}
       <p className='mt-6 text-center text-sm'>
         Don't have an account?{" "}
-        <Link to="/register" className='text-blue-500 hover:underline ml-1'>Register</Link>
+        <Link to={`/register?redirect=${encodeURIComponent(redirect)}`} className='text-blue-500 hover:underline ml-1'>Register</Link>
       </p>
     </form>
       </div>

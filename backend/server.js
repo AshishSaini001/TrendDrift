@@ -15,6 +15,7 @@ const uploadRoutes = require("./routes/uploadRoutes");
 const subscribeRoute=require("./routes/subscribeRoute");
 const adminRoutes=require("./routes/adminRoutes");
 const productAdminRoutes = require("./routes/productAdminRoutes");
+const adminOrderRoutes = require("./routes/adminOrderRoutes");
 
 app.use(cors());
 
@@ -49,6 +50,7 @@ app.use("/api/subscribe", subscribeRoute);
 //Admin routes
 app.use('/api/admin/users', adminRoutes);
 app.use('/api/admin/products', productAdminRoutes);
+app.use('/api/admin/orders', adminOrderRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);

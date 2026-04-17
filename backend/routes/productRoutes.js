@@ -5,6 +5,9 @@ const { adminAuth } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+const escapeRegExp = (value = "") =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 
 
 // get all products /api/products => Public route
@@ -33,7 +36,7 @@ router.get("/", async (req, res) => {
       query.category = category;
     }
     if (size) {
-      query.size = { $in: size.split(",") };
+      query.sizes = { $in: size.split(",") };
     }
     if (color) {
       query.colors = { $in: [color] };
@@ -57,13 +60,27 @@ router.get("/", async (req, res) => {
       }
     }
     if (search) {
-      query.$or = [
-        // $or -> return document that matches at least of the specified conditions in the array
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { brand: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } },
-      ];
+      const normalizedSearch = search.trim();
+      const compactSearch = normalizedSearch.replace(/[^a-zA-Z0-9]/g, "");
+      const exactRegex = new RegExp(escapeRegExp(normalizedSearch), "i");
+      const flexibleRegex = compactSearch
+        ? new RegExp(
+            compactSearch
+              .split("")
+              .map((char) => escapeRegExp(char))
+              .join("[\\W_]*"),
+            "i",
+          )
+        : null;
+      const searchableFields = ["name", "description", "brand", "category"];
+
+      query.$or = searchableFields.flatMap((field) => {
+        const rules = [{ [field]: { $regex: exactRegex } }];
+        if (flexibleRegex) {
+          rules.push({ [field]: { $regex: flexibleRegex } });
+        }
+        return rules;
+      });
     }
 
     //Sorting
@@ -131,25 +148,25 @@ router.get("/:id", async (req, res) => {
 
 
 
-//get similiar products based on category and brand /api/products/similar/:id => Public route
+//get similar products based on category and brand /api/products/similar/:id => Public route
 // based on current product category and gender
 
-router.get("/similiar/:id", async (req, res) => {
+router.get(["/similar/:id", "/similiar/:id"], async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    const similiarProducts = await product
+    const similarProducts = await Product
       .find({
         _id: { $ne: product._id }, // $ne -> not equal to
         category: product.category,
         gender: product.gender,
       })
       .limit(4);
-    res.json(similiarProducts);
+    res.json(similarProducts);
   } catch (err) {
-    console.error("Get similiar products failed:", err.message);
+    console.error("Get similar products failed:", err.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

@@ -5,6 +5,7 @@ import register from '../assets/register.webp'
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../redux/slices/authSlice';
 
 const Register = () => {
@@ -12,15 +13,26 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+    const [submitError, setSubmitError] = useState('');
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const toggleVisible=()=>{
     setIsVisible(!isVisible);
     }
 
-    const handleSubmit =(e)=>{
+    const handleSubmit = async (e)=>{
         e.preventDefault();
-        dispatch(registerUser({name, email, password}));
+      setSubmitError('');
+      const result = await dispatch(registerUser({name, email, password}));
+
+      if (registerUser.fulfilled.match(result)) {
+        navigate('/');
+        return;
+      }
+
+      const message = result.payload?.message || result.error?.message || 'Registration failed';
+      setSubmitError(message);
     }
 
   return (
@@ -74,6 +86,11 @@ const Register = () => {
         </span>
       </div>
       <button type='submit' className='w-full bg-TrendDrift-red text-white p-2 rounded-lg font-semibold hover:bg-[#017a96] transition cursor-pointer'>Sign Up</button>
+      {submitError && (
+        <p className='mt-4 text-sm text-red-600 text-center'>
+          {submitError}
+        </p>
+      )}
       <p className='mt-6 text-center text-sm'>
         Already have an account?{" "}
         <Link to="/login" className='text-blue-500 hover:underline ml-1'>Login</Link>

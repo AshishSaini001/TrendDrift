@@ -56,7 +56,7 @@ const orderSlice=createSlice({
         });
         builder.addCase(fetchUserOrders.rejected,(state,action)=>{
             state.loading=false;
-            state.error=action.payload.message;
+            state.error=action.payload?.message || action.error.message || "Failed to fetch orders";
         });
 
         builder.addCase(fetchOrderDetails.pending,(state)=>{
@@ -70,7 +70,7 @@ const orderSlice=createSlice({
         );
         builder.addCase(fetchOrderDetails.rejected,(state,action)=>{
             state.loading=false;
-            state.error=action.payload.message;
+            state.error=action.payload?.message || action.error.message || "Failed to fetch order details";
         }); 
     }
 })

@@ -1,26 +1,36 @@
 import React, { useState } from "react";
-
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import {
+  addUSer as addUser,
+  deleteUser,
+  fetchUsers,
+  updateUser,
+} from "../../redux/slices/adminSlice";
 const UserManagement = () => {
-  const [users, setUsers] = useState([
-    {
-      _id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "Admin",
-    },
-    {
-      _id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      role: "Customer",
-    },
-  ]);
+ const dispatch = useDispatch();
+ const navigate = useNavigate();
+
+ const {user}=useSelector((state)=>state.auth);
+ const {users,loading,error}=useSelector((state)=>state.admin);
+
+ useEffect(()=>{
+  if(!user || user.role?.toLowerCase() !== "admin"){
+    navigate("/");
+    return;
+  }
+  dispatch(fetchUsers());
+  },[user,navigate,dispatch])
+
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    role: "Customer", // Default role is Customer
+    role: "customer", // Default role is customer
   });
 
   const handleFormData = (e) => {
@@ -31,28 +41,53 @@ const UserManagement = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      role: "Customer",
-    });
+    dispatch(addUser(formData))
+      .unwrap()
+      .then(() => {
+        toast.success("User added successfully.");
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          role: "customer",
+        });
+      })
+      .catch((err) => {
+        toast.error(err?.message || "Failed to add user.");
+      });
   };
   const handleRoleChange = (userId, newRole) => {
-    setUsers(
-      users.map((user) =>
-        user._id === userId ? { ...user, role: newRole } : user,
-      ),
-    );
+    dispatch(updateUser({ id: userId, role: newRole }));
   };
 
   const handleDeleteUser = (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?"));
+    toast("Delete this user?", {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          try {
+            await dispatch(deleteUser(userId)).unwrap();
+            toast.success("User deleted successfully.");
+          } catch (err) {
+            toast.error(err?.message || "Failed to delete user.");
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+    });
   };
+
+  
 
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 ">User Management</h2>
+      {loading && <p>Loading users...</p>}
+      {error && <p className="text-red-500">Error: {error}</p>}
       {/* New USer Form */}
       <div className="p-6 rounded-lg mb-6">
         <h3 className="text-lg font-bold mb-4">Add New User</h3>
@@ -107,8 +142,8 @@ const UserManagement = () => {
               required
               className="w-full p-2 border rounded"
             >
-              <option value="Customer">Customer</option>
-              <option value="Admin">Admin</option>
+              <option value="customer">Customer</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
           <button
@@ -132,12 +167,12 @@ const UserManagement = () => {
           </thead>
           <tbody>
             {users.length > 0 ? (
-              users.map((user, index) => (
+              users.filter(Boolean).map((user, index) => (
                 <tr key={index} className="border-b hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
-                    {user.name}
+                    {user?.name || "Unknown"}
                   </td>
-                  <td className="px-4 py-3">{user.email}</td>
+                  <td className="px-4 py-3">{user?.email || "-"}</td>
                   <td className="px-4 py-3">
                     <select
                       value={user.role}
@@ -146,8 +181,8 @@ const UserManagement = () => {
                       }
                       className=" p-2 border rounded cursor-pointer"
                     >
-                      <option value="Customer">Customer</option>
-                      <option value="Admin">Admin</option>
+                      <option value="customer">Customer</option>
+                      <option value="admin">Admin</option>
                     </select>
                   </td>
                   <td className="px-4 py-3">

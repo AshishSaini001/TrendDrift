@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import women1 from "../../assets/Women-collection-1.jpg";
 const GenderCollectionSection = () => {
   return (
-    <section className="py-16 px-4 ">
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+    <section className="py-16 px-4 w-full ">
+      <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2">
         {/* Women's collection */}
 
         <div className="grid grid-rows-2 h-[700px]  cursor-pointer group">

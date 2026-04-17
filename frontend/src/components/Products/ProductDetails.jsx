@@ -1,93 +1,38 @@
 
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'sonner';
 import ProductGrid from './ProductGrid';
+import { useDispatch ,useSelector} from 'react-redux';
+import { fetchProductDetails, fetchSimilarProducts } from '../../redux/slices/productsSlice';
+import { addToCart } from '../../redux/slices/cartSlice';
 
 
+import { useParams } from 'react-router-dom';
 
 
-
- const product = {
-        name: "Classic White T-Shirt",
-        price: 19.99,
-        OriginalPrice: 29.99,
-        description: "A timeless classic white t-shirt made from 100% organic cotton. Perfect for any occasion.",
-        brand:"EcoWear",
-        material:"100% Organic Cotton",
-        sizes:["S","M","L","XL"],
-        colors:["White","Black","Blue"],
-        images:[
-            {
-                url:"https://picsum.photos/500/500/?random=11",
-                altText:"Classic White T-Shirt Image 1"
-            },
-            {
-                url:"https://picsum.photos/500/500/?random=12",
-                altText:"Classic White T-Shirt Image 2"     
-            },
-        ]
-    }
-
-
-const similarProducts = [
-    {
-        _id:1,
-        name: "Casual Blue Jeans",
-        price: 49.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=21",
-            altText: "Casual Blue Jeans Image"
-            }
-        ]
-    },
-    {
-        _id:2,
-        name: "Red Hoodie",
-        price: 39.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=22",
-            altText: "Red Hoodie Image"
-            }
-        ]
-    },
-    {
-        _id:3,
-        name: "Black Sneakers",
-        price: 59.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=23",
-            altText: "Black Sneakers Image" 
-            }
-        ]
-    },
-    {
-        _id:4,
-        name: "Leather Belt",       
-        price: 24.99,
-        images:[
-            {
-            url: "https://picsum.photos/500/500/?random=24",
-            altText: "Leather Belt Image"
-            }
-        ]
-    },
-]
-
-
-
-
-const ProductDetails = () => {
+const ProductDetails = ({ productId }) => {
+    const {id} =useParams();
+    const dispatch=useDispatch();
     const [mainImage, setMainImage] = useState(null);
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedColor, setSelectedColor] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const { selectedProduct: product, loading, error, similarProducts } = useSelector((state)=> state.products);
+    const {user,guestId} = useSelector((state)=> state.auth);
+    const productFetchId = productId || id;
+
+   useEffect(()=>{
+    if(productFetchId){
+        dispatch(fetchProductDetails(productFetchId));
+        dispatch(fetchSimilarProducts(productFetchId));
+    }
+   },[dispatch, productFetchId]);
+
     
     useEffect(()=>{
-        if(product.images && product.images.length >0){
+        if(product?.images && product.images.length > 0){
             setMainImage(product.images[0].url);
         }
         
@@ -111,18 +56,40 @@ const handleAddToCart=()=>{
     }
     setIsButtonDisabled(true);
 
-    setTimeout(()=>{
-        toast.success("Product added to cart successfully!", {duration:1000,});
-        setIsButtonDisabled(false);
-    },500)
+  dispatch(
+    addToCart({
+    productId: productFetchId,
+      size: selectedSize,
+      color: selectedColor,
+      quantity: quantity,
+      guestId,
+      userId :user?._id,
+    })
+  )
+  .then(() => {    toast.success("Product added to cart successfully!", { duration: 1000 });
+  })
+  .catch(() => {
+    toast.error("Failed to add product to cart. Please try again.", { duration: 1000 });
+  })
+  .finally(() => {
+    setIsButtonDisabled(false);
+  })
     
 }
 
+if(loading){
+    return <p className='text-center'>Loading product details...</p>;
+}
 
+if(error){
+    return <p className='text-center text-red-500'>Error loading product details: {error}</p>;
+}
    
   return (
     <div className='p-6 md:ml-35'>
-        <div className='max-w-6xl bg-white p-8 rounded-lg'>
+        {product && (
+        <div className='relative max-w-6xl rounded-3xl border border-neutral-200 bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ring-1 ring-black/5 overflow-hidden'>
+            <div className='absolute inset-x-0 top-0 h-1 bg-linear-to-r from-TrendDrift-red via-[#017a96] to-neutral-900'></div>
             <div className='flex flex-col md:flex-row'>
                 {/* Left Thumbmails */}
                 <div className='hidden md:flex flex-col space-y-4 mr-6'>
@@ -254,7 +221,7 @@ const handleAddToCart=()=>{
             </div>
 
         </div>
-      
+      )}
     </div>
   )
 }

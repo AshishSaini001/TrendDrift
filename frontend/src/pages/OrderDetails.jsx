@@ -1,38 +1,28 @@
-import React, { use } from "react";
+import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrderDetails } from "../redux/slices/orderSlice";
+
+const formatStatus = (status) => {
+  if (!status) return "Unknown";
+  return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+};
+
 const OrderDetails = () => {
   const { id } = useParams();
-  const [orderDetails, setOrderDetails] = useState(null);
-  useEffect(() => {
-    const mockOrderDetails = {
-      _id: id,
-      createdAt: new Date().toISOString(),
-      isPaid: true,
-      isDelivered: false,
-      paymentMethod: "PayPal",
-      shippingMethod: "Standard",
-      shippingAddress: { city: "New York", country: "USA" },
-      orderItems: [
-        {
-          productId: "123",
-          name: "Jacket",
-          price: 120,
-          quantity: 1,
-          image: "https://picsum.photos/150?random=1",
-        },
-        {
-          productId: "456",
-          name: "Shirt",
-          price: 80,
-          quantity: 2,
-          image: "https://picsum.photos/150?random=2",
-        },
-      ],
-    };
-    setOrderDetails(mockOrderDetails);
-  }, [id]);
+  const dispatch = useDispatch();
+  const { orderDetails, loading, error } = useSelector((state) => state.orders);
 
+  useEffect(() => {
+    dispatch(fetchOrderDetails(id));
+  }, [dispatch, id]);
+  if(loading){
+    return <div className="text-center py-10">Loading order details...</div>;
+  }
+  if(error){
+    return <div className="text-center py-10 text-red-600">Error: {error}</div>;
+  }
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
       <h2 className="text-2xl md:text-3xl font-bold mb-6">Order Details</h2>
@@ -57,9 +47,9 @@ const OrderDetails = () => {
                 {orderDetails.isPaid ? "Approved" : "Pending"}
               </span>
               <span
-                className={`${orderDetails.isDelivered ? "bg-green-700" : "bg-red-100 text-yellow-700"} px-3 py-1 rounded-full text-sm font-medium mb-2`}
+                className={`${orderDetails.status === "delivered" ? "bg-green-700 text-white" : orderDetails.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"} px-3 py-1 rounded-full text-sm font-medium mb-2`}
               >
-                {orderDetails.isDelivered ? "Delivered" : "Pending Delivery"}
+                {formatStatus(orderDetails.status)}
               </span>
             </div>
           </div>
@@ -92,7 +82,7 @@ const OrderDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                {orderDetails.orderItems.map((item) => (
+                {orderDetails.orderItems?.map((item) => (
                   <tr key={item.productId} className="border-b">
                     <td className="py-2 px-4 flex  justify-center">
                       <img

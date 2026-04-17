@@ -11,10 +11,11 @@ const Product = require("../models/product");
 //Only admin
 router.get("/", auth, adminAuth, async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find({}).sort({ createdAt: -1 }).lean();
     res.json(products);
   } catch (err) {
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("Fetching products failed:", err.message);
+    res.status(500).json({ message: err.message || "Internal Server Error" });
   }
 });
 
@@ -69,8 +70,11 @@ router.post("/", auth, adminAuth, async (req, res) => {
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (err) {
+    if (err.code === 11000 && err.keyPattern?.sku) {
+      return res.status(400).json({ message: "SKU already exists" });
+    }
     console.error("Product creation failed:", err.message);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: err.message || "Internal Server Error" });
   }
 });
 
@@ -84,6 +88,7 @@ router.put("/:id", auth, adminAuth, async (req, res) => {
       price,
       discountPrice,
       countInStock,
+      sku,
       category,
       brand,
       sizes,
@@ -103,31 +108,35 @@ router.put("/:id", auth, adminAuth, async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    product.name = name || product.name;
-    product.description = description || product.description;
-    product.price = price || product.price;
-    product.discountPrice = discountPrice || product.discountPrice;
-    product.countInStock = countInStock || product.countInStock;
-    product.category = category || product.category;
-    product.brand = brand || product.brand;
-    product.sizes = sizes || product.sizes;
-    product.colors = colors || product.colors;
-    product.collections = collections || product.collections;
-    product.material = material || product.material;
-    product.gender = gender || product.gender;
-    product.images = images || product.images;
+    product.name = name ?? product.name;
+    product.description = description ?? product.description;
+    product.price = price ?? product.price;
+    product.discountPrice = discountPrice ?? product.discountPrice;
+    product.countInStock = countInStock ?? product.countInStock;
+    product.sku = sku ?? product.sku;
+    product.category = category ?? product.category;
+    product.brand = brand ?? product.brand;
+    product.sizes = sizes ?? product.sizes;
+    product.colors = colors ?? product.colors;
+    product.collections = collections ?? product.collections;
+    product.material = material ?? product.material;
+    product.gender = gender ?? product.gender;
+    product.images = images ?? product.images;
     product.isFeatured =
       isFeatured !== undefined ? isFeatured : product.isFeatured;
     product.isPublished =
       isPublished !== undefined ? isPublished : product.isPublished;
-    product.tags = tags || product.tags;
-    product.dimensions = dimensions || product.dimensions;
-    product.weight = weight || product.weight;
+    product.tags = tags ?? product.tags;
+    product.dimensions = dimensions ?? product.dimensions;
+    product.weight = weight ?? product.weight;
     await product.save();
     res.json(product);
   } catch (err) {
+    if (err.code === 11000 && err.keyPattern?.sku) {
+      return res.status(400).json({ message: "SKU already exists" });
+    }
     console.error("Product update failed:", err.message);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: err.message || "Internal Server Error" });
   }
 });
 
@@ -142,7 +151,8 @@ router.delete("/:id", auth, adminAuth, async (req, res) => {
     await product.deleteOne();
     res.json({ message: "Product deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("Product deletion failed:", err.message);
+    res.status(500).json({ message: err.message || "Internal Server Error" });
   }
 });
 
