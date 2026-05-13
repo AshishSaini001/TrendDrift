@@ -14,10 +14,12 @@ import OrderDetails from "./pages/OrderDetails.jsx";
 import MyOrdersPage from "./pages/MyOrdersPage.jsx";
 import AdminLayout from "./components/Admin/AdminLayout.jsx";
 import AdminHomePage from "./pages/AdminHomePage.jsx";
+import AdminLogin from "./pages/AdminLogin.jsx";
 import UserManagementPage from "./components/Admin/UserManagement.jsx";
 import ProductManagement from "./components/Admin/ProductManagement.jsx";
 import EditProductPage from "./components/Admin/EditProductPage.jsx";
 import OrderManagement from "./components/Admin/OrderManagement.jsx";
+import ProtectedAdminRoute from "./components/Admin/ProtectedAdminRoute.jsx";
 
 import {Provider} from "react-redux";
 import store from "./redux/store.js";
@@ -32,8 +34,6 @@ function App() {
       <Routes>
         <Route path="/" element={<UserLayout />}>
           <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
           <Route path="*" element={<h1>404 Not Found</h1>} />
           <Route path="profile" element={<Profile />} />
           <Route path="collections/:collection" element={<CollectionPage />} />
@@ -46,15 +46,25 @@ function App() {
           <Route path="order/:id" element={<OrderDetails />} />
           <Route path="my-orders" element={<MyOrdersPage />} />
         </Route>
-        {/* Admin routes will go here */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        {/* Admin routes with authorization protection */}
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedAdminRoute>
+              <AdminLayout />
+            </ProtectedAdminRoute>
+          }
+        >
           <Route index element={<AdminHomePage />} />
           <Route path="users" element={<UserManagementPage />} />
           <Route path="products" element={<ProductManagement />} />
           <Route path="products/new" element={<EditProductPage />} />
           <Route path="products/:id/edit" element={<EditProductPage />} />
-          <Route path="*" element={<h1>Admin 404 Not Found</h1>} />
           <Route path="orders" element={<OrderManagement />} />
+          <Route path="*" element={<h1>Admin 404 Not Found</h1>} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -38,7 +38,7 @@ const toggleNavDrawer=()=>{
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 mt-10 w-full bg-white shadow-md">
-        <div className="mx-auto flex w-full max-w-none items-center justify-between py-1 px-6">
+        <div className="mx-auto flex w-full max-w-none items-center justify-between py-1 px-3 sm:px-4 lg:px-6">
           {/* Left - Logo */}
           <div>
             <Link to="/" className=" flex text-wxl font-medium">
@@ -52,31 +52,31 @@ const toggleNavDrawer=()=>{
             </Link>
           </div>
           {/* center - Navigation Links */}
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden xl:flex space-x-6">
               <Link to="/collections/all?gender=Men" className="text-gray-700 hover:text-TrendDrift-red text-sm font-medium">MEN</Link>
               <Link to="/collections/all?gender=Women" className="text-gray-700  hover:text-TrendDrift-red text-sm font-medium">WOMEN</Link>
               <Link to="/collections/all?category=Top Wear" className="text-gray-700  hover:text-TrendDrift-red text-sm font-medium">TOP WEAR</Link>
               <Link to="/collections/all?category=Bottom Wear" className="text-gray-700  hover:text-TrendDrift-red text-sm font-medium">BOTTOM WEAR</Link>
           </div>
           {/* Right - Icons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="rounded-full border border-gray-300 px-3 py-1 text-sm font-medium text-gray-700 hover:border-TrendDrift-red hover:text-TrendDrift-red"
+                  className="hidden rounded-full border border-gray-300 px-3 py-1 text-sm font-medium text-gray-700 hover:border-TrendDrift-red hover:text-TrendDrift-red lg:inline-flex"
                 >
                   Admin
                 </Link>
               )}
 
               <Link to="/profile" className="hover:text-TrendDrift-red">
-              <HiOutlineUser className="h-6 w-6 text-gray-700" /> 
+              <HiOutlineUser className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700" /> 
                </Link>
 
               <button className="relative hover:text-TrendDrift-red cursor-pointer"
               onClick={toggleCartDrawer}
               >
-              <HiOutlineShoppingBag className="h-6 w-6 text-gray-700" />
+              <HiOutlineShoppingBag className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700" />
               {cartItemCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {cartItemCount}
@@ -85,9 +85,11 @@ const toggleNavDrawer=()=>{
               </button>
 
               {/* Search */}
-              <SearchBar />
+              <div className="hidden lg:block">
+                <SearchBar />
+              </div>
 
-              <button className="md:hidden"
+              <button className="lg:hidden"
               onClick={toggleNavDrawer}
               >
                   <HiBars3BottomRight className="h-6 w-6 text-gray-700  " />

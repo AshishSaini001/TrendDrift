@@ -86,13 +86,13 @@ if(error){
 }
    
   return (
-    <div className='p-6 md:ml-35'>
+    <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
         {product && (
-        <div className='relative max-w-6xl rounded-3xl border border-neutral-200 bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ring-1 ring-black/5 overflow-hidden'>
+        <div className='relative rounded-3xl border border-neutral-200 bg-white p-4 sm:p-6 lg:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ring-1 ring-black/5 overflow-hidden'>
             <div className='absolute inset-x-0 top-0 h-1 bg-linear-to-r from-TrendDrift-red via-[#017a96] to-neutral-900'></div>
-            <div className='flex flex-col md:flex-row'>
+            <div className='flex flex-col lg:flex-row'>
                 {/* Left Thumbmails */}
-                <div className='hidden md:flex flex-col space-y-4 mr-6'>
+                <div className='hidden lg:flex flex-col space-y-4 mr-6'>
                     {product.images.map((image,index)=>(
                         <img src={image.url}
                         key={index}
@@ -103,7 +103,7 @@ if(error){
                     ))}
                 </div>
                 {/* Main Image */}
-                <div className='md:w-1/2'>
+                <div className='w-full lg:w-1/2'>
                     <div className='mb-4'>
                         <img src={mainImage} alt="Main Product"
                         className='w-full h-auto object-cover rounded-lg'
@@ -111,26 +111,26 @@ if(error){
                     </div>
                 </div>
                 {/* Mobile Thumbnails */}
-                <div className='md:hidden flex overscroll-x-scroll space-x-4 mb-4 '>
+                <div className='lg:hidden flex overflow-x-auto space-x-4 mb-4 pb-2'>
                       {product.images.map((image,index)=>(
                         <img src={image.url}
                         key={index}
                         alt={image.altText || `THumbmail ${index}`} 
-                        className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${mainImage===image.url ? 'border-black':'border-gray-300'}`}
+                        className={`w-20 h-20 object-cover rounded-lg cursor-pointer border shrink-0 ${mainImage===image.url ? 'border-black':'border-gray-300'}`}
                         onClick={()=>setMainImage(image.url)}
                         />
                     ))}
                 </div>
                 {/* RIght Side */}
-                <div className='md:w-1/2 md:ml-10'>
+                <div className='w-full lg:w-1/2 lg:ml-10'>
                 <h1 className='text-2xl md:text-3xl font-semibold mb-2'>
                     {product.name}
                 </h1>
                 <p className='text-lg text-gray-600 mb-1 line-through'>
-                    {product.OriginalPrice && `${product.OriginalPrice}`}
+                    {product.OriginalPrice && `₹${product.OriginalPrice}`}
                 </p>
                 <p className='text-xl text-gray-500 mb-2'>
-                    ${product.price}
+                    ₹{product.price}
                 </p>
                 <p className='text-gray-700 mb-4'>
                     {product.description}

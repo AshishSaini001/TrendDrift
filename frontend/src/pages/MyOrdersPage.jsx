@@ -90,11 +90,11 @@ const MyOrdersPage = () => {
                   </td>
 
                   <td className="py-2 px-2 sm:py-4 font-medium text-gray-900 whitespace-nowrap">
-                    ${order.totalPrice}
+                    ₹{order.totalPrice}
                   </td>
                   <td className="py-2 px-2 sm:py-4 font-medium text-gray-900 whitespace-nowrap">
                     <span
-                      className={`${order.status === "delivered" ? "bg-green-100 text-green-700" : order.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}
+                      className={`₹{order.status === "delivered" ? "bg-green-100 text-green-700" : order.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}
                             px-2 py-1 rounded-full text-xs sm:text-sm font-medium
                             `}
                     >

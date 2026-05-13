@@ -91,14 +91,14 @@ const OrderDetails = () => {
                         className="w-12 h-12 object-cover rounded-lg mr-4"
                       />
                       <Link
-                        to={`/product/${item.productId}`}
+                        to={`/product/₹{item.productId}`}
                         className="text-blue-500 hover:underline"
                       >
                         {item.name}
                       </Link>
                     </td>
                     <td className="py-2 px-4 text-center">
-                      ${item.price.toFixed(2)}
+                      ₹{item.price.toFixed(2)}
                     </td>
                     <td className="py-2 px-4 text-center">{item.quantity}</td>
                     <td className="py-2 px-4 text-center">

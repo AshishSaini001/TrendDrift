@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import loginImg from '../assets/login.webp';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
@@ -7,28 +7,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, googleAuth } from '../redux/slices/authSlice';
 import { useGoogleLogin } from '@react-oauth/google';
 
-const Login = () => {
+const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isVisible, setIsVisible] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
     const [submitError, setSubmitError] = useState('');
     
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const location = useLocation();
     const { loading, error, user } = useSelector((state) => state.auth);
 
-    const redirectPath = new URLSearchParams(location.search).get('redirect') || '/';
-    // Ensure redirect is always an absolute path
-    const redirect = redirectPath.startsWith('/') ? redirectPath : `/${redirectPath}`;
-
-    // Redirect to home page when user is authenticated
+    // Redirect if already logged in as admin
     useEffect(() => {
-        if (user) {
-            navigate(redirect, { replace: true });
+        if (user && user.role === 'admin') {
+            navigate('/admin', { replace: true });
         }
-    }, [user, navigate, redirect]);
+    }, [user, navigate]);
 
     const toggleVisible = () => setIsVisible(!isVisible);
 
@@ -37,6 +31,9 @@ const Login = () => {
             const result = await dispatch(googleAuth({ token: tokenResponse.credential || tokenResponse.access_token }));
             if (!googleAuth.fulfilled.match(result)) {
                 setSubmitError(result.payload?.message || "Google auth failed.");
+            } else if (result.payload?.role !== 'admin') {
+                setSubmitError("Only admin accounts can access this page.");
+                // Optionally logout the user if they're not an admin
             }
             // Navigation will happen via useEffect when user state is updated
         },
@@ -58,6 +55,11 @@ const Login = () => {
             } else {
                 setSubmitError(message);
             }
+        } else {
+            // Check if user is admin
+            if (result.payload?.role !== 'admin') {
+                setSubmitError("Only admin accounts can access this page.");
+            }
         }
         // Navigation will happen via useEffect when user state is updated
     };
@@ -67,7 +69,7 @@ const Login = () => {
             <div className='flex w-full max-w-[1024px] bg-white rounded-xl shadow-xl overflow-hidden' style={{ minHeight: '620px' }}>
                 {/* Left side image area */}
                 <div className='hidden md:block w-1/2 relative bg-gray-900'>
-                    <img src={loginImg} alt="Curation" className='w-full h-full object-cover absolute inset-0' />
+                    <img src={loginImg} alt="Admin Login" className='w-full h-full object-cover absolute inset-0' />
                     
                     {/* Gradient Overlay for text readability */}
                     <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent'></div>
@@ -75,10 +77,10 @@ const Login = () => {
                     {/* Bottom Text Area */}
                     <div className='absolute bottom-12 left-10 right-10 text-white'>
                         <h2 className='text-3xl font-bold mb-3 tracking-tight' style={{fontFamily: 'Inter, sans-serif'}}>
-                            Curated Style <br /> for the Modern Mind.
+                            Admin Access <br /> Control Panel.
                         </h2>
                         <p className='text-gray-300 text-sm font-medium pr-8'>
-                            Access our latest editorial collections and exclusive artifacts.
+                            Secure access to the TrendDrift administration dashboard. Authorized personnel only.
                         </p>
                     </div>
                 </div>
@@ -86,10 +88,10 @@ const Login = () => {
                 {/* Right side form area */}
                 <div className='w-full md:w-1/2 flex flex-col justify-center px-10 sm:px-14 py-12'>
                     <div className='max-w-[400px] w-full mx-auto'>
-                        <h4 className='text-[11px] text-[#017a96] font-bold tracking-[0.15em] uppercase mb-1'>Welcome Back</h4>
-                        <h1 className='text-3xl font-extrabold text-gray-900 mb-2 tracking-tight' style={{fontFamily: 'Inter, sans-serif'}}>Log into TrendDrift</h1>
+                        <h4 className='text-[11px] text-[#017a96] font-bold tracking-[0.15em] uppercase mb-1'>Admin Portal</h4>
+                        <h1 className='text-3xl font-extrabold text-gray-900 mb-2 tracking-tight' style={{fontFamily: 'Inter, sans-serif'}}>Admin Sign In</h1>
                         <p className='text-[13px] text-gray-600 mb-8 font-medium'>
-                            Enter your credentials to access your curated dashboard.
+                            Enter your credentials to access the admin dashboard.
                         </p>
 
                         <button 
@@ -113,7 +115,7 @@ const Login = () => {
                                 <input type="email" 
                                     className='w-full border border-transparent bg-[#e7ebf0]/60 p-3 rounded text-sm focus:outline-none focus:ring-2 focus:ring-[#017a96] focus:border-transparent transition text-gray-800 font-medium placeholder-gray-400'
                                     value={email}
-                                    placeholder='name@example.com'
+                                    placeholder='admin@trenddrift.com'
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
                                 />
@@ -136,23 +138,12 @@ const Login = () => {
                                 </span>
                             </div>
 
-                            <div className="flex items-center mb-7">
-                                <input type="checkbox" id="remember" 
-                                    className="w-[14px] h-[14px] rounded border-gray-300 text-[#017a96] focus:ring-[#017a96] transition"
-                                    checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
-                                />
-                                <label htmlFor="remember" className="ml-3 text-[13px] text-gray-700 font-medium">
-                                    Remember me for 30 days
-                                </label>
-                            </div>
-
                             <button type='submit' disabled={loading} className='w-full bg-[#017a96] text-white p-3 rounded font-semibold hover:bg-[#016880] hover:shadow-lg hover:-translate-y-0.5 cursor-pointer transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed text-sm tracking-wide'>
-                                {loading ? 'Signing In...' : 'Sign In'}
+                                {loading ? 'Signing In...' : 'Admin Sign In'}
                             </button>
                             
                             {(submitError || error) && (
-                                <div className='mt-4 p-2'>
+                                <div className='mt-4 p-3 bg-red-50 rounded'>
                                     <p className='text-xs text-red-600 text-center font-semibold'>
                                         {submitError || error}
                                     </p>
@@ -161,8 +152,8 @@ const Login = () => {
 
                             <div className='mt-8 text-center'>
                                 <p className='text-[13px] text-gray-600 font-medium'>
-                                    Don't have an account?{" "}
-                                    <Link to={`/register?redirect=${encodeURIComponent(redirect)}`} className='text-[#017a96] font-bold hover:underline tracking-wide ml-1'>Create an Account</Link>
+                                    Not an admin?{" "}
+                                    <Link to="/" className='text-[#017a96] font-bold hover:underline tracking-wide ml-1'>Back to Home</Link>
                                 </p>
                             </div>
                         </form>
@@ -173,4 +164,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default AdminLogin;

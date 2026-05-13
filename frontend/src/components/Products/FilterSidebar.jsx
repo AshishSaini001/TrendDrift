@@ -13,10 +13,10 @@ const FilterSidebar = () => {
         material:[],
         brand:[],
         minPrice:0,
-        maxPrice:100,
+        maxPrice:10000,
     });
 
-    const [priceRange,setPriceRange]=useState([0,100]);
+    const [priceRange,setPriceRange]=useState([0,10000]);
     const categories=["Top Wear" ,"BottomWear"];
     const colors=[
         "Red","Blue","Green","Black","White","Yellow","Pink","Purple","Gray","Brown"
@@ -37,9 +37,9 @@ const FilterSidebar = () => {
             material:params.material ? params.material.split(",") : [],
             brand:params.brand ? params.brand.split(",") : [],
             minPrice:params.minPrice ? Number(params.minPrice) : 0,
-            maxPrice:params.maxPrice ? Number(params.maxPrice) : 100,
+            maxPrice:params.maxPrice ? Number(params.maxPrice) : 10000,
         });
-        setPriceRange([0,params.maxPrice || 100]);
+        setPriceRange([0,params.maxPrice || 10000]);
     }, [searchParams]);
 
 
@@ -197,14 +197,14 @@ const FilterSidebar = () => {
         <div className='mb-8'>
             <label className='block text-gray-600 font-medium mb-2'>Price Range</label>
             <input type="range" 
-            min={0} max={100} 
+            min={0} max={10000} 
             value={priceRange[1]}
             onChange={handlePriceChange}
             className='w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer'
             />
             <div className='flex justify-between  text-gray-600 mt-2'>
-                <span>$0</span>
-                <span>${priceRange[1]}</span>
+                <span>₹0</span>
+                <span>₹{priceRange[1]}</span>
             </div>
 
         </div>
