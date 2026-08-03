@@ -1,9 +1,24 @@
 {
 	"buildCommand": "node backend/scripts/build-frontend.js",
 	"outputDirectory": "backend/dist",
-	"rewrites": [
+	"headers": [
 		{
 			"source": "/(.*)",
+			"headers": [
+				{
+					"key": "Cross-Origin-Opener-Policy",
+					"value": "same-origin-allow-popups"
+				}
+			]
+		}
+	],
+	"rewrites": [
+		{
+			"source": "/api/(.*)",
+			"destination": "/api/[...path]"
+		},
+		{
+			"source": "/((?!api/).*)",
 			"destination": "/index.html"
 		}
 	]
