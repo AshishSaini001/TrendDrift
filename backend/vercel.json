@@ -1,10 +1,3 @@
 {
-  "buildCommand": "node scripts/build-frontend.js",
-  "outputDirectory": "dist",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "version": 2
 }
