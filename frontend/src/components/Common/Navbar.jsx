@@ -25,7 +25,7 @@ useEffect(() => {
   );
 }, [dispatch, user?._id, guestId]);
 
-const cartItemCount = cart?.products?.reduce((total, product) => total + product.quantity, 0) || 0;
+const cartItemCount = cart?.products?.length || 0;
 
 const toggleNavDrawer=()=>{
     setNavOpen(!navOpen);

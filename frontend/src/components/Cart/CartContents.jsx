@@ -83,7 +83,7 @@ const CartContents = ({ cart, userId, guestId }) => {
             </div>
           </div>
           <div className="shrink-0 text-right pl-1">
-            <p className="font-semibold text-sm sm:text-base">${(product.price * product.quantity).toFixed(2)}</p>
+            <p className="font-semibold text-sm sm:text-base">Rs. {(product.price * product.quantity).toFixed(2)}</p>
             <button onClick={() => handleRemoveFromCart(product.productId, product.size, product.color)} className="mt-2">
               <RiDeleteBin3Line className="h-5 w-5 sm:h-6 sm:w-6 text-red-600 cursor-pointer" />
             </button>

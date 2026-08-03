@@ -76,7 +76,7 @@ router.post("/verify-otp", async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: "1h" }
     );
 
     res.status(200).json({
@@ -128,8 +128,8 @@ router.post("/login", async (req, res) => {
       return res.status(403).json({ message: "Please verify your email first", email: user.email, unverified: true });
     }
 
-    if(!user.password) {
-        return res.status(400).json({ message: "Invalid credentials. Did you sign up with Google?" });
+    if (!user.password) {
+      return res.status(400).json({ message: "Invalid credentials. Did you sign up with Google?" });
     }
 
     const isMatch = await user.matchPassword(password);
@@ -139,7 +139,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: "1h" }
     );
     res.status(200).json({
       user: { _id: user._id, name: user.name, email: user.email, role: user.role },
@@ -161,11 +161,11 @@ router.post("/google-auth", async (req, res) => {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.error_description || "Failed to fetch user info from Google");
     }
-    
+
     const { name, email, sub: googleId } = data;
 
     let user = await User.findOne({ email });
@@ -196,64 +196,64 @@ router.post("/google-auth", async (req, res) => {
 });
 
 // Get user profile /api/users/profile => Protected route, requires authentication
-router.get("/profile", auth ,async(req,res)=>{
-    try{
-        const user = await User.findById(req.user.userId).select("-password");
-        if(!user){
-            return res.status(404).json({message:"User not found"});
-        }
-        res.status(200).json(user);
+router.get("/profile", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    catch(err){
-        console.error("Fetching user profile failed:", err.message);
-        res.status(500).json({message:"Internal Server Error"});
-    }
+    res.status(200).json(user);
+  }
+  catch (err) {
+    console.error("Fetching user profile failed:", err.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 //Update user profile /api/users/profile => Protected route, requires authentication
-router.put("/profile", auth ,async(req,res)=>{
-    const { name, email, password } = req.body;
-    try{
-        const user = await User.findById(req.user.userId);
-        if(!user){
-            return res.status(404).json({message:"User not found"});
-        }
-        user.name = name || user.name;
-        user.email = email || user.email;
-        await user.save();
-        res.status(200).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-        });
+router.put("/profile", auth, async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    catch(err){
-        console.error("Updating user profile failed:", err.message);
-        res.status(500).json({message:"Internal Server Error"});
-    }
+    user.name = name || user.name;
+    user.email = email || user.email;
+    await user.save();
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+  }
+  catch (err) {
+    console.error("Updating user profile failed:", err.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 //change password /api/users/change-password => Protected route, requires authentication
-router.put("/change-password", auth ,async(req,res)=>{
-    const { currentPassword, newPassword } = req.body;
-    try{
-        const user = await User.findById(req.user.userId);
-        if(!user){
-            return res.status(404).json({message:"User not found"});
-        }
-        const isMatch = await user.matchPassword(currentPassword);
-        if(!isMatch){
-            return res.status(400).json({message:"Current password is incorrect"});
-        }
-        user.password = newPassword;
-        await user.save();
-        res.status(200).json({message:"Password changed successfully"});
+router.put("/change-password", auth, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    catch(err){
-        console.error("Changing password failed:", err.message);
-        res.status(500).json({message:"Internal Server Error"});
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
     }
+    user.password = newPassword;
+    await user.save();
+    res.status(200).json({ message: "Password changed successfully" });
+  }
+  catch (err) {
+    console.error("Changing password failed:", err.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 
