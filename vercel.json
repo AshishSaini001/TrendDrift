@@ -1,6 +1,6 @@
 {
-	"buildCommand": "npm run build",
-	"outputDirectory": "dist",
+	"buildCommand": "node backend/scripts/build-frontend.js",
+	"outputDirectory": "backend/dist",
 	"rewrites": [
 		{
 			"source": "/(.*)",
