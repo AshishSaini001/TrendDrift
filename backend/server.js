@@ -38,9 +38,15 @@ const adminOrderRoutes = require("./routes/adminOrderRoutes");
 
 app.use(cors(corsOptions));
 
-// Connect to MongoDB
-connectDB().catch((err) => {
-  console.error("MongoDB initialization failed:", err.message);
+// Ensure MongoDB is ready before API routes execute in serverless deployments.
+app.use("/api", async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("MongoDB request gate failed:", err.message);
+    res.status(503).json({ message: "Database unavailable" });
+  }
 });
 
 app.get("/", (req, res) => {
