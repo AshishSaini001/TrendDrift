@@ -37,10 +37,11 @@ const productAdminRoutes = require("./routes/productAdminRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
 
 // Connect to MongoDB
-connectDB();
+connectDB().catch((err) => {
+  console.error("MongoDB initialization failed:", err.message);
+});
 
 app.get("/", (req, res) => {
   res.send("WELCOME TO TRENDRIFT BACKEND");
