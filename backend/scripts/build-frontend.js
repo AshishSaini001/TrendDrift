@@ -45,7 +45,7 @@ const distDir = __dirname;
 
 app.use(express.static(distDir));
 
-app.get('*', (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(distDir, 'index.html'));
 });
 
